@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Gestão de Tickets') }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                {{ _('Gestão de Tickets') }}
+            </h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ _('Gerencie os problemas reportados pelos utilizadores no Plex.') }}</p>
+        </div>
+        <div class="flex gap-2">
+            <select id="ticket-status-filter" class="rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm">
+                <option value="open">Abertos</option>
+                <option value="resolved">Resolvidos</option>
+                <option value="all">Todos</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Lista de Tickets -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50/80 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700 text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 font-semibold">
+                        <th class="px-6 py-4">Data</th>
+                        <th class="px-6 py-4">Utilizador</th>
+                        <th class="px-6 py-4">Mídia</th>
+                        <th class="px-6 py-4">Problema</th>
+                        <th class="px-6 py-4">Status</th>
+                        <th class="px-6 py-4 text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tickets-table-body" class="divide-y divide-gray-200 dark:divide-gray-700">
+                    <tr><td colspan="6" class="text-center py-8 text-gray-500">A carregar tickets...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const filter = document.getElementById('ticket-status-filter');
+    const tbody = document.getElementById('tickets-table-body');
+
+    const loadTickets = async () => {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-500">A carregar...</td></tr>`;
+        try {
+            const res = await fetch(`/api/tickets/?status=${filter.value}`);
+            const data = await res.json();
+            
+            if (data.success) {
+                if (data.tickets.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-gray-500">Nenhum ticket encontrado.</td></tr>`;
+                    return;
+                }
+                
+                tbody.innerHTML = data.tickets.map(t => `
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                        <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">${t.created_at}</td>
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-white">${t.username}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300 font-semibold">${t.media_title}</td>
+                        <td class="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">
+                            <div><strong>${t.issue_type}</strong></div>
+                            ${t.description ? `<div class="text-xs text-gray-400">${t.description}</div>` : ''}
+                        </td>
+                        <td class="px-6 py-4 text-sm">
+                            <span class="px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-full ${t.status === 'open' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400' : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'}">${t.status}</span>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            ${t.status === 'open' ? `
+                            <button onclick="resolveTicket(${t.id})" class="text-green-600 hover:text-green-800 font-medium text-sm">Resolver</button>
+                            ` : `<span class="text-xs text-gray-400">Resolvido: ${t.resolved_at}</span><br><span class="text-xs text-gray-400">${t.admin_notes || ''}</span>`}
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-red-500">Erro ao carregar tickets.</td></tr>`;
+        }
+    };
+
+    filter.addEventListener('change', loadTickets);
+    loadTickets();
+});
+
+async function resolveTicket(id) {
+    const notes = prompt("Notas da resolução (opcional):");
+    if (notes === null) return;
+    
+    try {
+        const res = await fetch(`/api/tickets/${id}/resolve`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({admin_notes: notes})
+        });
+        const data = await res.json();
+        if(data.success) {
+            alert("Ticket resolvido com sucesso!");
+            document.getElementById('ticket-status-filter').dispatchEvent(new Event('change'));
+        } else {
+            alert("Erro: " + data.message);
+        }
+    } catch(e) {
+        alert("Erro na requisição.");
+    }
+}
+</script>
+{% endblock %}

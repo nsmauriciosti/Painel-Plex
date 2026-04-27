@@ -1,0 +1,489 @@
+{% extends "base.html" %}
+
+{% block title %}{{ _('Minha Conta') }} - {{ app_title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Ocultar barra de scroll para navegação horizontal (Tabs) */
+    .horizontal-scroll {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;     /* Firefox */
+    }
+    .horizontal-scroll::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+
+    /* Estilos das Tabs (Separadores) Otimizados e Alinhados */
+    .tab-button {
+        @apply whitespace-nowrap px-4 py-2 rounded-lg text-sm font-medium text-gray-500 dark:text-gray-400 transition-all duration-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none;
+    }
+    .tab-button.active {
+        @apply bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm ring-1 ring-gray-200 dark:ring-gray-600;
+    }
+
+    /* Filtros do Overseerr */
+    .filter-btn {
+        @apply px-4 py-1.5 rounded-full text-xs font-semibold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-700/50 transition-colors hover:bg-gray-200 dark:hover:bg-gray-600;
+    }
+    .filter-btn.active {
+        @apply bg-blue-600 text-white dark:bg-blue-500 shadow-md;
+    }
+
+    /* Ícones das Plataformas */
+    .platform-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 0.75rem;
+        background-size: 55%;
+        background-repeat: no-repeat;
+        background-position: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .platform-alexa { background-color: #00caff; background-image: url(/static/images/platforms/alexa.svg); }
+    .platform-android { background-color: #3ddc84; background-image: url(/static/images/platforms/android.svg); }
+    .platform-atv, .platform-tvos { background-color: #a2aaad; background-image: url(/static/images/platforms/atv.svg); }
+    .platform-chrome { background-color: #db4437; background-image: url(/static/images/platforms/chrome.svg); }
+    .platform-chromecast { background-color: #4285f4; background-image: url(/static/images/platforms/chromecast.svg); }
+    .platform-default { background-color: #e5a00d; background-image: url(/static/images/platforms/default.svg); }
+    .platform-dlna { background-color: #4ba32f; background-image: url(/static/images/platforms/dlna.svg); }
+    .platform-firefox { background-color: #ff7139; background-image: url(/static/images/platforms/firefox.svg); }
+    .platform-gtv { background-color: #008bcf; background-image: url(/static/images/platforms/gtv.svg); }
+    .platform-ie { background-color: #18bcef; background-image: url(/static/images/platforms/ie.svg); }
+    .platform-ios { background-color: #a2aaad; background-image: url(/static/images/platforms/ios.svg); }
+    .platform-kodi { background-color: #30aada; background-image: url(/static/images/platforms/kodi.svg); }
+    .platform-lg, .platform-webos { background-color: #990033; background-image: url(/static/images/platforms/lg.svg); }
+    .platform-linux { background-color: #0099cc; background-image: url(/static/images/platforms/linux.svg); }
+    .platform-macos { background-color: #a2aaad; background-image: url(/static/images/platforms/macos.svg); }
+    .platform-msedge, .platform-microsoftedge { background-color: #0078d7; background-image: url(/static/images/platforms/msedge.svg); }
+    .platform-opera { background-color: #fa1e4e; background-image: url(/static/images/platforms/opera.svg); }
+    .platform-playstation { background-color: #003087; background-image: url(/static/images/platforms/playstation.svg); }
+    .platform-plex { background-color: #e5a00d; background-image: url(/static/images/platforms/plex.svg); }
+    .platform-plexamp { background-color: #e5a00d; background-image: url(/static/images/platforms/plexamp.svg); }
+    .platform-roku { background-color: #673293; background-image: url(/static/images/platforms/roku.svg); }
+    .platform-safari { background-color: #00d3f9; background-image: url(/static/images/platforms/safari.svg); }
+    .platform-samsung, .platform-tizen { background-color: #034ea2; background-image: url(/static/images/platforms/samsung.svg); }
+    .platform-synclounge { background-color: #151924; background-image: url(/static/images/platforms/synclounge.svg); }
+    .platform-tivo { background-color: #00a7e1; background-image: url(/static/images/platforms/tivo.svg); }
+    .platform-wiiu { background-color: #03a9f4; background-image: url(/static/images/platforms/wiiu.svg); }
+    .platform-windows { background-color: #0078d7; background-image: url(/static/images/platforms/windows.svg); }
+    .platform-wp { background-color: #68217a; background-image: url(/static/images/platforms/windows.svg); }
+    .platform-xbmc { background-color: #3b4872; background-image: url(/static/images/platforms/kodi.svg); }
+    .platform-xbox { background-color: #107c10; background-image: url(/static/images/platforms/xbox.svg); }
+</style>
+{% endblock %}
+
+{% block content %}
+<header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div>
+        <h2 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+            <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            {{ _('Minha Conta') }}
+        </h2>
+        <p class="text-gray-500 dark:text-gray-400 mt-2">{{ _('Gerencie os seus acessos, pagamentos e preferências.') }}</p>
+    </div>
+</header>
+
+<!-- Indicador de Carregamento -->
+<div id="loadingIndicator" class="flex flex-col items-center justify-center py-20">
+    <div class="relative w-14 h-14">
+        <div class="absolute inset-0 rounded-full border-t-2 border-yellow-500 animate-spin"></div>
+        <div class="absolute inset-2 rounded-full border-r-2 border-blue-500 animate-spin" style="animation-direction: reverse; animation-duration: 1.2s;"></div>
+    </div>
+    <p class="text-lg font-medium text-gray-600 dark:text-gray-300 mt-4 animate-pulse">{{ _('Carregando perfil...') }}</p>
+</div>
+
+<div id="errorContainer" class="hidden text-center py-10 bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/50 rounded-2xl max-w-2xl mx-auto mt-8">
+    <svg class="w-12 h-12 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+    <p class="text-lg font-bold text-red-800 dark:text-red-400">{{ _('Ocorreu um erro ao carregar os detalhes da conta.') }}</p>
+    <p id="errorMessage" class="text-sm text-red-600 dark:text-red-300 mt-2 font-mono bg-red-100/50 dark:bg-red-900/30 p-2 rounded inline-block"></p>
+</div>
+
+<div id="accountDetailsContainer" class="hidden animate-fade-in">
+    <!-- Banner de Status (Ex: Expirado, Bloqueado) -->
+    <div id="status-banner" class="hidden mb-6 transition-all"></div>
+
+    <div id="main-account-content">
+        <!-- Cartão de Perfil Principal (Estilo Clássico Alinhado à Esquerda) -->
+        <div class="bg-white dark:bg-gray-800/50 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 mb-8 overflow-hidden">
+            <div class="p-6 flex items-center gap-8 sm:gap-10">
+                <img id="user-thumb" src="" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border-2 border-gray-100 dark:border-gray-600 shadow-sm object-cover flex-shrink-0">
+                
+                <div class="flex-1 text-left">
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                        <span id="user-username"></span>
+                        <div id="gamification-badges" class="flex gap-2 hidden">
+                            <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-2 py-0.5 rounded-full dark:bg-yellow-900/50 dark:text-yellow-300 border border-yellow-200 dark:border-yellow-700 flex items-center shadow-sm">🌟 Nv <span id="user-level" class="ml-1">1</span></span>
+                            <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded-full dark:bg-blue-900/50 dark:text-blue-300 border border-blue-200 dark:border-blue-700 flex items-center shadow-sm">✨ <span id="user-xp" class="ml-1 mr-1">0</span> XP</span>
+                        </div>
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-2 sm:mb-4" id="user-email"></p>
+                    
+                    <div id="user-dates" class="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                        <p>{{ _('Membro desde:') }} <span id="user-join-date" class="font-semibold text-gray-900 dark:text-white"></span></p>
+                        <p>{{ _('Limite de Telas:') }} <span id="user-screen-limit" class="font-semibold text-gray-900 dark:text-white"></span></p>
+                        <p id="user-expiration-container" class="hidden"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Secção de Privacidade Embutida no Cartão -->
+            <div class="bg-gray-50 dark:bg-gray-800/80 px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                    <h4 class="font-semibold text-gray-800 dark:text-gray-200 text-sm flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path></svg>
+                        {{ _('Modo Fantasma (Rankings)') }}
+                    </h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ _('Oculte o seu nome verdadeiro das estatísticas globais visíveis aos outros utilizadores.') }}</p>
+                </div>
+                <label for="hide-leaderboard-toggle" class="relative inline-flex items-center cursor-pointer flex-shrink-0 self-end sm:self-auto">
+                    <input type="checkbox" id="hide-leaderboard-toggle" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Navegação por Separadores Alinhada -->
+        <div class="mb-6 border-b border-gray-200 dark:border-gray-700">
+            <nav id="account-tabs" class="flex space-x-2 overflow-x-auto horizontal-scroll pb-2" aria-label="Tabs">
+                {% if not current_user.is_admin() %}
+                <button type="button" data-tab="overview" class="tab-button {% if not current_user.is_admin() %}active{% endif %}">{{ _('Visão Geral') }}</button>
+                <button type="button" data-tab="recommendations" class="tab-button">{{ _('Recomendações') }}</button>
+                <button type="button" data-tab="payment" class="tab-button">{{ _('Pagamentos') }}</button>
+                <button type="button" data-tab="referrals" class="tab-button">{{ _('Indique e Ganhe') }}</button>
+                <button type="button" data-tab="requests" class="tab-button hidden">{{ _('Meus Pedidos') }}</button>
+                {% endif %}
+                <button type="button" data-tab="security" class="tab-button {% if current_user.is_admin() %}active{% endif %}">{{ _('Dispositivos') }}</button>
+                <button type="button" data-tab="history" class="tab-button">{{ _('Histórico') }}</button>
+            </nav>
+        </div>
+
+        <!-- Conteúdo dos Separadores -->
+        <div id="account-tab-content">
+            
+            <!-- ========================================== -->
+            <!-- SEPARADOR: VISÃO GERAL -->
+            <!-- ========================================== -->
+            <div id="tab-overview" class="tab-content {% if not current_user.is_admin() %}active{% endif %} space-y-6">
+                
+                <div class="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        {{ _('Acesso às Bibliotecas') }}
+                    </h3>
+                    <div id="library-list" class="flex flex-wrap gap-2"></div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                        {{ _('Detalhes para Notificações') }}
+                    </h3>
+                    
+                    <!-- Formulário com a correção do Jinja IF para esconder automaticamente via Backend -->
+                    <div id="contact-details-form" class="space-y-4 max-w-xl">
+                        <div>
+                            <label for="profileName" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Nome Completo') }}</label>
+                            <input type="text" id="profileName" class="w-full p-2.5 text-sm rounded-lg border bg-gray-50 border-gray-300 text-gray-900 focus:ring-yellow-500 focus:border-yellow-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        </div>
+                        
+                        <div id="telegram-field-container" class="{% if not config.TELEGRAM_ENABLED %}hidden{% endif %}">
+                            <label for="profileTelegram" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('ID de Utilizador do Telegram') }}</label>
+                            <input type="text" id="profileTelegram" class="w-full p-2.5 text-sm rounded-lg border bg-gray-50 border-gray-300 text-gray-900 focus:ring-yellow-500 focus:border-yellow-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="{{ _('Apenas números') }}">
+                        </div>
+                        
+                        <div id="discord-field-container" class="{% if not config.DISCORD_ENABLED %}hidden{% endif %}">
+                            <label for="profileDiscord" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('ID de Utilizador do Discord') }}</label>
+                            <input type="text" id="profileDiscord" class="w-full p-2.5 text-sm rounded-lg border bg-gray-50 border-gray-300 text-gray-900 focus:ring-yellow-500 focus:border-yellow-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white" placeholder="{{ _('Ex: 123456789012345678') }}">
+                        </div>
+                        
+                        <div id="phone-field-container" class="{% if not config.WEBHOOK_ENABLED and not config.WHATSAPP_ENABLED %}hidden{% endif %}">
+                            <label for="profilePhone" class="block mb-2 text-sm font-medium text-gray-500 dark:text-gray-400">{{ _('Número de Telefone (WhatsApp)') }}</label>
+                            <div class="flex">
+                                <select id="countryCode" class="p-2.5 text-sm rounded-l-lg border border-r-0 bg-gray-50 border-gray-300 text-gray-900 focus:ring-yellow-500 focus:border-yellow-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                                    <!-- Opções injetadas por JS -->
+                                </select>
+                                <input type="tel" id="profilePhone" placeholder="21999998888" class="w-full p-2.5 text-sm rounded-r-lg border bg-gray-50 border-gray-300 text-gray-900 focus:ring-yellow-500 focus:border-yellow-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                            </div>
+                        </div>
+                        
+                        <div class="pt-2">
+                            <button id="saveContactDetails" class="btn bg-green-600 hover:bg-green-500 text-white shadow-md">{{ _('Salvar Alterações') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SEPARADOR: RECOMENDAÇÕES -->
+            <!-- ========================================== -->
+            <div id="tab-recommendations" class="tab-content space-y-6 hidden">
+                <div class="bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-900 p-8 rounded-2xl shadow-xl border border-indigo-500/30 overflow-hidden relative">
+                    <!-- Overlay de brilho -->
+                    <div class="absolute top-0 right-0 -mt-20 -mr-20 w-64 h-64 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+                    <div class="absolute bottom-0 left-0 -mb-20 -ml-20 w-64 h-64 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 2s;"></div>
+                    
+                    <div class="relative z-10">
+                        <h3 class="text-2xl font-bold text-white mb-2 flex items-center gap-3">
+                            <svg class="w-7 h-7 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                            {{ _('Recomendações Inteligentes') }}
+                        </h3>
+                        <p class="text-indigo-200 mb-8 max-w-2xl text-sm">{{ _('Sugestões personalizadas com base no seu histórico e nos conteúdos mais populares do momento.') }}</p>
+                        
+                        <div id="recommendations-loading" class="flex flex-col items-center justify-center py-12">
+                            <svg class="animate-spin h-10 w-10 text-white opacity-50" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            <span class="mt-4 text-indigo-200 text-sm font-medium">{{ _('Procurando recomendações para ti...') }}</span>
+                        </div>
+
+                        <div id="recommendations-error" class="hidden py-8 text-center text-red-300 bg-red-900/30 rounded-xl border border-red-500/30">
+                            {{ _('Não foi possível carregar as recomendações neste momento.') }}
+                        </div>
+
+                        <!-- Carrossel -->
+                        <div id="recommendations-container" class="hidden relative group">
+                            <!-- Botão Anterior -->
+                            <button id="rec-prev" class="absolute left-0 top-1/2 -translate-y-1/2 -ml-4 sm:-ml-6 z-20 bg-white/10 hover:bg-white/30 backdrop-blur-md text-white p-2.5 sm:p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-30 disabled:cursor-not-allowed">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"></path></svg>
+                            </button>
+
+                            <!-- Lista (Scroll Horizontal) -->
+                            <div id="rec-list" class="flex gap-4 sm:gap-6 overflow-x-auto horizontal-scroll scroll-smooth snap-x snap-mandatory pb-4 pt-2 px-2">
+                                <!-- Cards Injetados via JS -->
+                            </div>
+
+                            <!-- Botão Próximo -->
+                            <button id="rec-next" class="absolute right-0 top-1/2 -translate-y-1/2 -mr-4 sm:-mr-6 z-20 bg-white/10 hover:bg-white/30 backdrop-blur-md text-white p-2.5 sm:p-3 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-lg transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/50 disabled:opacity-30 disabled:cursor-not-allowed">
+                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SEPARADOR: PAGAMENTOS -->
+            <!-- ========================================== -->
+            <div id="tab-payment" class="tab-content space-y-6">
+                <!-- Alterado max-w-3xl e afins para usar mx-auto para manter tudo no centro -->
+                <div id="payment-card" class="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6 flex items-center justify-center gap-2">
+                        <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                        {{ _('Renovar Assinatura (PIX)') }}
+                    </h3>
+                    <!-- mx-auto força o container de pagamentos ao centro -->
+                    <div class="max-w-lg mx-auto">
+                        <div id="payment-section" class="space-y-4">
+                            <p class="text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2">
+                                <svg class="animate-spin h-4 w-4 text-yellow-500" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                {{ _('A procurar planos disponíveis...') }}
+                            </p>
+                        </div>
+                        
+                        <div id="pix-display" class="hidden text-center space-y-6 mt-8 animate-fade-in">
+                            <div class="inline-block p-4 bg-white rounded-xl shadow-md border border-gray-200">
+                                <img id="pix-qr-code" src="" class="w-56 h-56 object-contain" alt="QR Code PIX">
+                            </div>
+                            <p class="font-medium text-gray-700 dark:text-gray-300">{{ _('Escaneie o QR Code com o aplicativo do seu banco ou copie o código abaixo:') }}</p>
+                            
+                            <div class="flex items-center relative">
+                                <input type="text" id="pix-copy-paste" readonly class="w-full pl-4 pr-24 py-3 text-sm font-mono text-gray-600 bg-gray-100 rounded-xl border border-gray-200 dark:bg-gray-900/50 dark:border-gray-700 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500/50">
+                                <button id="copy-pix-code" class="absolute right-1.5 px-4 py-1.5 rounded-lg bg-gray-800 text-white text-sm font-bold hover:bg-gray-700 transition-colors dark:bg-gray-200 dark:text-gray-900 dark:hover:bg-white">{{ _('COPIAR') }}</button>
+                            </div>
+                            
+                            <div id="polling-status" class="mt-4">
+                                <div class="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+                                    <svg class="animate-spin h-4 w-4 text-blue-500" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                    {{ _('A aguardar pagamento no banco...') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                        {{ _('Histórico de Transações') }}
+                    </h3>
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 custom-scrollbar">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead class="bg-gray-50 dark:bg-gray-800/80">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Data') }}</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Valor') }}</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ _('Status') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payment-history-table" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                <!-- Preenchido via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SEPARADOR: INDIQUE E GANHE -->
+            <!-- ========================================== -->
+            <div id="tab-referrals" class="tab-content space-y-6">
+                <div class="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center">
+                    <h3 class="text-xl font-bold text-indigo-600 dark:text-indigo-400 mb-2">{{ _('Programa de Afiliados') }}</h3>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-6">{{ _('Convide os seus amigos para o nosso servidor. Quando eles se registarem e fizerem o primeiro pagamento, você ganha dias grátis!') }}</p>
+                    
+                    <div class="max-w-md mx-auto">
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">{{ _('Seu Link de Convite Exclusivo') }}</label>
+                        <div class="flex items-center relative">
+                            <input type="text" id="referral-link" readonly class="w-full pl-4 pr-24 py-3 text-sm font-mono text-gray-600 bg-gray-100 rounded-xl border border-gray-200 dark:bg-gray-900/50 dark:border-gray-700 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
+                            <button id="copy-referral-link" class="absolute right-1.5 px-4 py-1.5 rounded-lg bg-indigo-600 text-white text-sm font-bold hover:bg-indigo-500 transition-colors">{{ _('COPIAR') }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SEPARADOR: PEDIDOS (OVERSEERR) -->
+            <!-- ========================================== -->
+            <div id="tab-requests" class="tab-content space-y-6">
+                <div class="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"></path></svg>
+                            {{ _('Os Seus Pedidos') }}
+                        </h3>
+                        <div id="request-filters" class="flex flex-wrap gap-2 p-1 bg-gray-100 dark:bg-gray-900/50 rounded-full border border-gray-200 dark:border-gray-700">
+                            <button class="filter-btn active" data-filter="all">{{ _('Todos') }}</button>
+                            <button class="filter-btn" data-filter="available">{{ _('Disponível') }}</button>
+                            <button class="filter-btn" data-filter="processing">{{ _('A Descarregar') }}</button>
+                            <button class="filter-btn" data-filter="pending">{{ _('Pendente') }}</button>
+                        </div>
+                    </div>
+                    <div id="requests-container" class="space-y-3">
+                        <!-- Conteúdo será injetado pelo JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SEPARADOR: SEGURANÇA (DISPOSITIVOS) -->
+            <!-- ========================================== -->
+            <div id="tab-security" class="tab-content {% if current_user.is_admin() %}active{% endif %} space-y-6">
+                <div class="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                        {{ _('Dispositivos Vinculados') }}
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">{{ _('Registo de aplicações e dispositivos que acederam ao Plex com a sua conta recentemente.') }}</p>
+                    <div id="device-list-container" class="space-y-3 max-h-[500px] overflow-y-auto pr-2"></div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- SEPARADOR: HISTÓRICO -->
+            <!-- ========================================== -->
+            <div id="tab-history" class="tab-content space-y-6">
+                <div class="bg-white dark:bg-gray-800/50 p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            {{ _('Histórico de Visualização') }}
+                        </h3>
+                        
+                        <!-- Barra de Pesquisa revertida para o original e alinhada -->
+                        <div class="relative w-full sm:w-64">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+                            </div>
+                            <input type="search" id="historySearchInput" placeholder="{{ _('Pesquisar no histórico...') }}" class="w-full p-2 pl-10 text-sm rounded-lg border bg-gray-50 border-gray-300 text-gray-900 focus:ring-yellow-500 focus:border-yellow-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        </div>
+                    </div>
+                    
+                    <div id="history-container" class="overflow-x-auto min-h-[300px]">
+                        <!-- Tabela será injetada aqui -->
+                    </div>
+                    <div id="history-pagination" class="flex justify-center items-center mt-6 text-sm font-medium gap-4">
+                        <!-- Controlos de paginação serão injetados aqui -->
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- Div vazia para garantir o funcionamento do Modal Injector do util.js caso seja necessário -->
+<div id="providerChoiceModal" class="hidden fixed inset-0 z-50 bg-gray-900/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto"></div>
+{% endblock %}
+
+{% block scripts %}
+<script id="account-script"
+        type="module" 
+        src="{{ url_for('static', filename='js/account.js') }}"
+        data-get-account-details-url="{{ url_for('users_api.get_account_details') }}"
+        data-get-account-requests-url="{{ url_for('users_api.get_account_requests') }}"
+        data-update-account-profile-url="{{ url_for('users_api.update_account_profile') }}"
+        data-get-account-devices-url="{{ url_for('users_api.get_account_devices') }}"
+        data-update-privacy-url="{{ url_for('users_api.update_privacy_settings') }}"
+        data-get-payment-options-url="{{ url_for('payments_api.get_payment_options') }}"
+        data-create-charge-url="{{ url_for('payments_api.create_charge_route') }}"
+        data-get-payment-history-url="{{ url_for('users_api.get_user_payments_history', plex_user_id=current_user.id) }}"
+        data-get-watch-history-url="{{ url_for('stats_api.get_user_watch_history_route') }}"
+        data-validate-coupon-url="{{ url_for('payments_api.validate_coupon_route') }}"
+        data-login-url="{{ url_for('auth.login') }}"
+        data-i18n-error="{{ _('Erro') }}"
+        data-i18n-no-provider="{{ _('Nenhum método de pagamento disponível no momento.') }}"
+        data-i18n-generate-pix="{{ _('Gerar PIX') }}"
+        data-i18n-generate-pix-for-price="{{ _('Gerar PIX por R$ {price}') }}"
+        data-i18n-activate-free-subscription="{{ _('Ativar Acesso Gratuito') }}"
+        data-i18n-choose-provider="{{ _('Escolha o Método de Pagamento') }}"
+        data-i18n-pay-with-efi="{{ _('Pagar com Efí') }}"
+        data-i18n-pay-with-mp="{{ _('Pagar via Mercado Pago') }}"
+        data-i18n-cancel="{{ _('Cancelar') }}"
+        data-i18n-wait="{{ _('Aguarde...') }}"
+        data-i18n-payment-confirmed="{{ _('Pagamento confirmado com sucesso!') }}"
+        data-i18n-polling-confirmed="{{ _('Sucesso! A atualizar perfil...') }}"
+        data-i18n-polling-error="{{ _('A tentar ligação ao banco:') }}"
+        data-i18n-code-copied="{{ _('Chave PIX Copiada!') }}"
+        data-i18n-test-ended="{{ _('O Seu Período de Teste Terminou') }}"
+        data-i18n-test-ended-message="{{ _('Esperamos que tenha gostado! Para continuar a aceder ao servidor, por favor ative uma assinatura abaixo.') }}"
+        data-i18n-access-blocked="{{ _('Acesso Interrompido') }}"
+        data-i18n-access-blocked-message="{{ _('A sua conta encontra-se desativada por decisão administrativa.') }}"
+        data-i18n-access-blocked-contact="{{ _('Por favor, contacte o administrador para mais informações.') }}"
+        data-i18n-expired-signature="{{ _('Assinatura Inativa') }}"
+        data-i18n-expired-signature-message="{{ _('O seu tempo de acesso terminou. Renove abaixo para voltar a assistir instantaneamente.') }}"
+        data-i18n-expiring-access="{{ _('Atenção ao Vencimento') }}"
+        data-i18n-expiring-access-message="{{ _('O seu acesso expira em {days} dias ({date}).') }}"
+        data-i18n-expires-today-message="{{ _('A sua assinatura expira HOJE ({date}). Renove já para evitar interrupções.') }}"
+        data-i18n-no-shared-library="{{ _('Ainda não tem acesso a nenhuma biblioteca.') }}"
+        data-i18n-expires-on="{{ _('Expira a:') }}"
+        data-i18n-screen-singular="{{ _('Tela') }}"
+        data-i18n-screen-plural="{{ _('Telas') }}"
+        data-i18n-no-payments-found="{{ _('Sem registo de pagamentos anteriores.') }}"
+        data-i18n-date="{{ _('Data') }}"
+        data-i18n-description="{{ _('Descrição') }}"
+        data-i18n-value="{{ _('Valor') }}"
+        data-i18n-status="{{ _('Status') }}"
+        data-i18n-last-seen="{{ _('Visto Há') }}"
+        data-i18n-years-ago="{{ _('{count} anos') }}"
+        data-i18n-months-ago="{{ _('{count} meses') }}"
+        data-i18n-days-ago="{{ _('{count} dias') }}"
+        data-i18n-hours-ago="{{ _('{count} horas') }}"
+        data-i18n-minutes-ago="{{ _('{count} min') }}"
+        data-i18n-just-now="{{ _('Agora') }}"
+        data-i18n-no-devices-found="{{ _('Não existem aparelhos no seu histórico recente.') }}"
+        data-i18n-saving="{{ _('A Guardar...') }}"
+        data-i18n-save-details="{{ _('Salvar Alterações') }}"
+        data-i18n-coupon-applied-success="{{ _('Desconto Aplicado!') }}"
+        data-i18n-no-history-found="{{ _('O seu histórico de visualizações está vazio.') }}"
+        data-i18n-loading-history="{{ _('A procurar nas cassetes antigas...') }}"
+        data-i18n-previous="{{ _('Anterior') }}"
+        data-i18n-next="{{ _('Próxima') }}"
+        data-i18n-page-of="{{ _('Página {currentPage} / {totalPages}') }}"
+        data-i18n-progress="{{ _('Progresso') }}"
+        data-i18n-player="{{ _('Aparelho') }}"
+        data-i18n-title="{{ _('Filme / Série') }}"
+        data-i18n-loading-requests="{{ _('A verificar a base de dados central...') }}"
+        data-i18n-no-requests-found="{{ _('Nenhum pedido condiz com este filtro.') }}"
+        data-i18n-requested-on="{{ _('Pedido a') }}"
+        data-i18n-overseerr-disabled="{{ _('Módulo de pedidos desativado no servidor.') }}"
+        >
+</script>
+{% endblock %}

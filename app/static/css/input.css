@@ -1,0 +1,207 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    /* --- Estilos Globais --- */
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+    .toast {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        padding: 1rem 1.5rem;
+        border-radius: 0.5rem;
+        color: white;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        z-index: 9999;
+    }
+    .toast.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .toast.success {
+        background-color: #10B981;
+    }
+    .toast.error {
+        background-color: #EF4444;
+    }
+    .toast.info {
+        background-color: #3B82F6;
+    }
+    .modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.75);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 50;
+        backdrop-filter: blur(4px);
+        transition: opacity 0.3s ease-in-out;
+    }
+    .modal-content {
+        @apply bg-transparent p-6 sm:p-8 rounded-xl shadow-2xl;
+        max-width: 95%;
+        width: 520px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transform: translateY(-2rem);
+    }
+    .modal-backdrop:not(.hidden) .modal-content {
+        transform: translateY(0);
+    }
+    .modal-body {
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+    .modal-body::-webkit-scrollbar {
+        display: none;
+    }
+    .modal-body {
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+    }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.2s ease-in-out;
+        border: 1px solid transparent;
+    }
+    .btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+    }
+    .btn svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+    #notification-panel {
+        transform-origin: top right;
+        transition: all 0.2s ease-out;
+    }
+    #notification-badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 9999px;
+        background-color: #ef4444;
+        border: 2px solid white;
+    }
+    .dark #notification-badge {
+        border-color: #1f2937;
+    }
+
+    /* --- Estilos da página Users --- */
+    .user-tab {
+        @apply flex items-center justify-center gap-1 sm:gap-2 py-3 px-2 sm:px-3 border-b-2 font-medium text-sm transition-all duration-200 border-transparent text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-gray-600 hover:text-gray-700 dark:hover:text-gray-200 whitespace-nowrap rounded-t-md min-w-0;
+    }
+    .user-tab.active {
+        @apply border-yellow-500 text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-500/10;
+    }
+    .user-tab .tab-icon {
+        @apply h-5 w-5 flex-shrink-0;
+    }
+    .user-tab .tab-text {
+        @apply hidden sm:inline;
+    }
+    .user-tab .tab-count {
+        @apply ml-1 px-2 py-0.5 text-xs font-medium rounded-full;
+    }
+
+    /* --- Estilos das páginas Settings & Financial & Account Tabs --- */
+    .tab-button {
+        @apply px-4 py-2 font-semibold text-gray-500 dark:text-gray-400 border-b-2 border-transparent -mb-px whitespace-nowrap;
+        @apply hover:border-yellow-500 hover:text-gray-700 dark:hover:text-gray-200 transition-colors duration-200;
+    }
+    .tab-button.active {
+        @apply border-yellow-500 text-yellow-600 dark:text-yellow-400;
+    }
+    .tab-content, .sub-tab-content {
+        display: none;
+    }
+    .tab-content.active, .sub-tab-content.active {
+        display: block;
+    }
+    /* Regras específicas para desabilitar campos com base na checkbox principal de cada provedor */
+    #subtab-EFI:has(#EFI_ENABLED:not(:checked)) .disablable-input,
+    #subtab-MERCADOPAGO:has(#MERCADOPAGO_ENABLED:not(:checked)) .disablable-input,
+    #subtab-BPIX:has(#BPIX_ENABLED:not(:checked)) .disablable-input {
+        @apply bg-gray-200 dark:bg-gray-800 cursor-not-allowed opacity-50;
+        /* Impede interações com os campos desativados */
+        pointer-events: none;
+    }
+    /* Garante que os inputs dentro fiquem com aparência desativada também */
+    #subtab-EFI:has(#EFI_ENABLED:not(:checked)) .disablable-input input,
+    #subtab-EFI:has(#EFI_ENABLED:not(:checked)) .disablable-input select,
+    #subtab-EFI:has(#EFI_ENABLED:not(:checked)) .disablable-input textarea,
+    #subtab-EFI:has(#EFI_ENABLED:not(:checked)) .disablable-input button,
+    #subtab-MERCADOPAGO:has(#MERCADOPAGO_ENABLED:not(:checked)) .disablable-input input,
+    #subtab-MERCADOPAGO:has(#MERCADOPAGO_ENABLED:not(:checked)) .disablable-input select,
+    #subtab-MERCADOPAGO:has(#MERCADOPAGO_ENABLED:not(:checked)) .disablable-input textarea,
+    #subtab-MERCADOPAGO:has(#MERCADOPAGO_ENABLED:not(:checked)) .disablable-input button,
+    #subtab-BPIX:has(#BPIX_ENABLED:not(:checked)) .disablable-input input,
+    #subtab-BPIX:has(#BPIX_ENABLED:not(:checked)) .disablable-input select,
+    #subtab-BPIX:has(#BPIX_ENABLED:not(:checked)) .disablable-input textarea,
+    #subtab-BPIX:has(#BPIX_ENABLED:not(:checked)) .disablable-input button {
+         @apply cursor-not-allowed;
+    }
+    /* Estilo específico para checkboxes dentro da área desativada */
+    #subtab-EFI:has(#EFI_ENABLED:not(:checked)) .disablable-input input[type="checkbox"],
+    #subtab-MERCADOPAGO:has(#MERCADOPAGO_ENABLED:not(:checked)) .disablable-input input[type="checkbox"],
+    #subtab-BPIX:has(#BPIX_ENABLED:not(:checked)) .disablable-input input[type="checkbox"] {
+         @apply opacity-50; /* Apenas reduz a opacidade */
+    }
+
+    #log-display {
+        white-space: pre-wrap;
+        word-break: break-all;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 0.8rem;
+    }
+    .modal-backdrop { /* Este já existe, mas mantemos para garantir */
+        @apply fixed inset-0 z-50 flex items-center justify-center bg-gray-100 dark:bg-gray-900;
+    }
+    .provider-fields {
+        display: none;
+    }
+    .provider-fields.active {
+        display: block;
+    }
+
+    /* --- Utilitários --- */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+
+    /* Estilos para a lista de seleção de usuários no MODAL (do Dashboard) */
+    #bulk-notify-selection-list { max-height: 40vh; }
+    #bulk-notify-selection-list label:hover { background-color: rgba(255, 255, 255, 0.05); }
+    #bulk-notify-selection-list::-webkit-scrollbar { width: 4px; }
+    #bulk-notify-selection-list::-webkit-scrollbar-thumb { background-color: #4b5563; border-radius: 4px; }
+    
+    /* Estilo para o filtro de 'Meus Pedidos' */
+    .filter-btn.active {
+        @apply bg-yellow-500 text-white dark:bg-yellow-600;
+    }
+    
+}
+
