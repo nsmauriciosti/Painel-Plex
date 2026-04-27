@@ -2934,3 +2934,449 @@ UnboundLocalError: cannot access local variable 'urlparse' where it is not assoc
 2026-04-26 21:48:20,693 - urllib3.connectionpool - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectTimeoutError(<HTTPConnection(host='192.168.100.251', port=32400) at 0x7a199b16df40>, 'Connection to 192.168.100.251 timed out. (connect timeout=30)')': /status/sessions
 2026-04-26 21:55:13,488 - urllib3.connectionpool - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectTimeoutError(<HTTPConnection(host='192.168.100.251', port=32400) at 0x7a199b1a4770>, 'Connection to 192.168.100.251 timed out. (connect timeout=30)')': /status/sessions
 2026-04-26 21:55:20,657 - urllib3.connectionpool - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectTimeoutError(<HTTPConnection(host='192.168.100.251', port=32400) at 0x7a199a858980>, 'Connection to 192.168.100.251 timed out. (connect timeout=30)')': /status/sessions
+2026-04-27 09:23:02,072 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 09:23:02,432 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 09:23:02,435 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 09:23:02,440 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 09:23:02,443 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 09:23:03,655 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 09:23:03,682 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 09:23:03,704 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 09:23:03,802 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 7
+2026-04-27 09:23:05,712 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 09:23:05,946 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 09:23:05,949 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 09:23:05,954 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 09:23:05,957 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 09:23:06,592 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 09:23:06,617 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 09:23:06,639 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 09:23:06,729 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 11
+2026-04-27 09:36:06,754 - urllib3.connectionpool - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPConnectionPool(host='192.168.100.251', port=32400): Read timed out. (read timeout=30)")': /status/sessions
+2026-04-27 09:36:38,759 - urllib3.connectionpool - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ReadTimeoutError("HTTPConnectionPool(host='192.168.100.251', port=32400): Read timed out. (read timeout=30)")': /status/sessions
+2026-04-27 10:14:36,596 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 10:14:36,596 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 10:14:36,596 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 10:14:36,606 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 10:14:36,606 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 10:14:36,614 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 10:14:38,854 - app.services.tautulli.api_client - INFO - A testar a ligação de configuração com o Tautulli em: http://192.168.100.104:8181/api/v2
+2026-04-27 10:14:38,870 - app.services.tautulli.api_client - INFO - Ligação de teste com Tautulli bem-sucedida.
+2026-04-27 12:05:11,740 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 12:05:12,094 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 12:05:12,096 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 12:05:12,101 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 12:05:12,103 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 12:05:14,097 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 12:05:14,124 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 12:05:14,147 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 12:05:14,239 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 7
+2026-04-27 12:05:16,159 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 12:05:16,370 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 12:05:16,372 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 12:05:16,377 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 12:05:16,379 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 12:05:17,062 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 12:05:17,088 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 12:05:17,110 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 12:05:17,204 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 11
+2026-04-27 12:05:23,179 - app.services.tautulli.api_client - INFO - A testar a ligação de configuração com o Tautulli em: http://192.168.100.104:8181/api/v2
+2026-04-27 12:05:23,204 - app.services.tautulli.api_client - INFO - Ligação de teste com Tautulli bem-sucedida.
+2026-04-27 12:05:27,856 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:05:27,856 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:05:27,856 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:05:27,867 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:05:27,867 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:05:27,877 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:05:35,447 - app.services.tautulli_manager - WARNING - Tautulli: Não foi possível encontrar o perfil para o ID '29465941'. Detalhes de visualização vazios.
+2026-04-27 12:05:37,066 - app.services.tautulli.api_client - INFO - A testar a ligação de configuração com o Tautulli em: http://192.168.100.104:8181/api/v2
+2026-04-27 12:05:37,098 - app.services.tautulli.api_client - INFO - Ligação de teste com Tautulli bem-sucedida.
+2026-04-27 12:06:38,357 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 12:06:38,606 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 12:06:38,609 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 12:06:38,614 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 12:06:38,617 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 12:06:41,477 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 12:06:41,507 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 12:06:41,538 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 12:06:41,656 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 7
+2026-04-27 12:06:43,565 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 12:06:43,860 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 12:06:43,864 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 12:06:43,871 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 12:06:43,875 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 12:06:44,589 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 12:06:44,626 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 12:06:44,661 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 12:06:44,780 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 11
+2026-04-27 12:06:46,879 - app.services.tautulli.api_client - INFO - A testar a ligação de configuração com o Tautulli em: http://192.168.100.104:8181/api/v2
+2026-04-27 12:06:46,904 - app.services.tautulli.api_client - INFO - Ligação de teste com Tautulli bem-sucedida.
+2026-04-27 12:06:50,010 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:06:50,010 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:06:50,011 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:06:50,026 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:06:50,036 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:06:50,048 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 12:06:58,090 - app.services.tautulli_manager - WARNING - Tautulli: Não foi possível encontrar o perfil para o ID '29465941'. Detalhes de visualização vazios.
+2026-04-27 12:07:05,639 - app.services.tautulli.api_client - INFO - A testar a ligação de configuração com o Tautulli em: http://192.168.100.104:8181/api/v2
+2026-04-27 12:07:05,657 - app.services.tautulli.api_client - INFO - Ligação de teste com Tautulli bem-sucedida.
