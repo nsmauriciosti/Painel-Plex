@@ -19,13 +19,8 @@ env/
 *.swo
 *~
 
-# Runtime databases (gerados automaticamente em cada instância)
-config/scheduler_jobs.db
-config/cache/
-
-# Config sensível (contém tokens e chaves API)
-config/config.json
-config/*.pem
+# Runtime config (tokens, cache, databases - gerado por cada instância)
+config/
 
 # Flask session / cache
 flask_session/
