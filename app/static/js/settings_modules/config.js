@@ -91,6 +91,8 @@ export const fieldMap = {
     'TERMINATION_MSG_SCREEN_LIMIT': { type: 'textarea', default: '' },
     'TMDB_API_KEY': { type: 'password', default: '' },
     'REFERRAL_BONUS_DAYS': { type: 'number', default: 5 },
+    'SYSTEM_BROADCAST_ENABLED': { type: 'checkbox', default: false },
+    'SYSTEM_BROADCAST_MESSAGE': { type: 'text', default: '' },
 };
 
 if (scriptTag) {

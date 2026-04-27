@@ -3380,3 +3380,417 @@ UnboundLocalError: cannot access local variable 'urlparse' where it is not assoc
 2026-04-27 12:06:58,090 - app.services.tautulli_manager - WARNING - Tautulli: Não foi possível encontrar o perfil para o ID '29465941'. Detalhes de visualização vazios.
 2026-04-27 12:07:05,639 - app.services.tautulli.api_client - INFO - A testar a ligação de configuração com o Tautulli em: http://192.168.100.104:8181/api/v2
 2026-04-27 12:07:05,657 - app.services.tautulli.api_client - INFO - Ligação de teste com Tautulli bem-sucedida.
+2026-04-27 17:31:10,816 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 17:31:11,008 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 17:31:11,010 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 17:31:11,014 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 17:31:11,016 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 17:31:11,644 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 17:31:11,664 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 17:31:11,685 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 17:31:11,769 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 8
+2026-04-27 17:31:13,385 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 17:31:13,565 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 17:31:13,567 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 17:31:13,571 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 17:31:13,573 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 17:31:14,180 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 17:31:14,206 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 17:31:14,228 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 17:31:14,316 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 12
+2026-04-27 17:31:22,538 - app.services.tautulli.api_client - INFO - A testar a ligação de configuração com o Tautulli em: http://192.168.100.104:8181/api/v2
+2026-04-27 17:31:22,555 - app.services.tautulli.api_client - INFO - Ligação de teste com Tautulli bem-sucedida.
+2026-04-27 17:31:37,186 - app - ERROR - Exception on /settings [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/decorators.py", line 10, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/main.py", line 87, in settings_page
+    return render_template('settings.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/app/app/templates/settings.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/app/app/templates/base.html", line 213, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/templates/settings.html", line 75, in block 'content'
+    {% include "settings/tabs/general.html" %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/templates/settings/tabs/general.html", line 66, in top-level template code
+    {% for lang, name in config.LANGUAGES.items() %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 490, in getattr
+    return getattr(obj, attribute)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'dict object' has no attribute 'LANGUAGES'
+2026-04-27 17:31:43,016 - app - ERROR - Exception on /settings [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/decorators.py", line 10, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/main.py", line 87, in settings_page
+    return render_template('settings.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/app/app/templates/settings.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/app/app/templates/base.html", line 213, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/templates/settings.html", line 75, in block 'content'
+    {% include "settings/tabs/general.html" %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/templates/settings/tabs/general.html", line 66, in top-level template code
+    {% for lang, name in config.LANGUAGES.items() %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 490, in getattr
+    return getattr(obj, attribute)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'dict object' has no attribute 'LANGUAGES'
+2026-04-27 17:31:43,872 - app - ERROR - Exception on /settings [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/decorators.py", line 10, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/main.py", line 87, in settings_page
+    return render_template('settings.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/app/app/templates/settings.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/app/app/templates/base.html", line 213, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/templates/settings.html", line 75, in block 'content'
+    {% include "settings/tabs/general.html" %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/templates/settings/tabs/general.html", line 66, in top-level template code
+    {% for lang, name in config.LANGUAGES.items() %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 490, in getattr
+    return getattr(obj, attribute)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'dict object' has no attribute 'LANGUAGES'
+2026-04-27 17:31:46,433 - app.services.tautulli.api_client - INFO - A testar a ligação de configuração com o Tautulli em: http://192.168.100.104:8181/api/v2
+2026-04-27 17:31:46,457 - app.services.tautulli.api_client - INFO - Ligação de teste com Tautulli bem-sucedida.
+2026-04-27 17:31:47,843 - app.services.tautulli_manager - WARNING - Tautulli: Não foi possível encontrar o perfil para o ID '29465941'. Detalhes de visualização vazios.
+2026-04-27 17:31:51,038 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 17:31:51,039 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 17:31:51,039 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 17:31:51,048 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 17:31:51,101 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 17:31:51,124 - app - ERROR - Exception on /image/ [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 143, in proxy_image
+    final_url, params = build_final_url(source, image_path)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/image.py", line 92, in build_final_url
+    parsed = urlparse(image_path)
+             ^^^^^^^^
+UnboundLocalError: cannot access local variable 'urlparse' where it is not associated with a value
+2026-04-27 17:31:59,889 - app.services.tautulli.api_client - INFO - A testar a ligação de configuração com o Tautulli em: http://192.168.100.104:8181/api/v2
+2026-04-27 17:31:59,903 - app.services.tautulli.api_client - INFO - Ligação de teste com Tautulli bem-sucedida.
+2026-04-27 17:32:01,749 - app - ERROR - Exception on /settings [GET]
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/decorators.py", line 10, in decorated_function
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/app/app/blueprints/main.py", line 87, in settings_page
+    return render_template('settings.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/templating.py", line 151, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/flask/templating.py", line 132, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/app/app/templates/settings.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "/app/app/templates/base.html", line 213, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/templates/settings.html", line 75, in block 'content'
+    {% include "settings/tabs/general.html" %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/templates/settings/tabs/general.html", line 66, in top-level template code
+    {% for lang, name in config.LANGUAGES.items() %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 490, in getattr
+    return getattr(obj, attribute)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.UndefinedError: 'dict object' has no attribute 'LANGUAGES'
+2026-04-27 17:34:05,592 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 17:34:05,841 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 17:34:05,843 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 17:34:05,847 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 17:34:05,849 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 17:34:06,529 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 17:34:06,551 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 17:34:06,570 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 17:34:06,648 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 7
+2026-04-27 17:34:08,295 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 17:34:08,480 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 17:34:08,483 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 17:34:08,487 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 17:34:08,489 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 17:34:09,235 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 17:34:09,258 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 17:34:09,279 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 17:34:09,368 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 11
+2026-04-27 17:34:18,491 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 17:34:18,493 - app.services.tautulli_manager - INFO - A recarregar as credenciais do Tautulli Manager...
+2026-04-27 17:34:18,496 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 17:34:24,744 - app.services.tautulli_manager - INFO - Cache de estatísticas do Tautulli invalidado.
+2026-04-27 17:34:24,745 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 17:34:25,428 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 17:34:25,443 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 17:34:33,848 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 17:34:33,850 - app.services.tautulli_manager - INFO - A recarregar as credenciais do Tautulli Manager...
+2026-04-27 17:34:33,853 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 17:34:33,914 - app.services.tautulli_manager - INFO - Cache de estatísticas do Tautulli invalidado.
+2026-04-27 17:34:33,915 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 17:34:34,565 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 17:34:34,579 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 17:36:42,682 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 17:36:42,685 - app.services.tautulli_manager - INFO - A recarregar as credenciais do Tautulli Manager...
+2026-04-27 17:36:42,687 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 17:36:42,752 - app.services.tautulli_manager - INFO - Cache de estatísticas do Tautulli invalidado.
+2026-04-27 17:36:42,753 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 17:36:43,400 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 17:36:43,417 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 18:00:13,477 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 18:00:13,665 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 18:00:13,667 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 18:00:13,672 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 18:00:13,674 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 18:00:16,045 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 18:00:16,068 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 18:00:16,087 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 18:00:16,164 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 7
+2026-04-27 18:00:17,664 - app.logging_config - INFO - Sistema de logging inicializado. Nível: INFO, Arquivo: /app/app/../config/app.log
+2026-04-27 18:00:17,840 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 18:00:17,841 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 18:00:17,846 - app.services.bpix_manager - WARNING - Credenciais da BPIX não estão completamente configuradas.
+2026-04-27 18:00:17,848 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 18:00:18,515 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 18:00:18,537 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 18:00:18,556 - app.scheduler - INFO - O agendador iniciará no fuso horário: America/Sao_Paulo
+2026-04-27 18:00:18,647 - app.scheduler - INFO - Agendador de tarefas iniciado com PID: 11
+2026-04-27 18:00:27,145 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 18:00:27,148 - app.services.tautulli_manager - INFO - A recarregar as credenciais do Tautulli Manager...
+2026-04-27 18:00:27,150 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 18:00:27,244 - app.services.tautulli_manager - INFO - Cache de estatísticas do Tautulli invalidado.
+2026-04-27 18:00:27,245 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 18:00:27,967 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 18:00:27,982 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.
+2026-04-27 18:02:20,576 - app.services.efi_manager - WARNING - Credenciais da Efí incompletas. O serviço PIX Efí está desativado.
+2026-04-27 18:02:20,578 - app.services.tautulli_manager - INFO - A recarregar as credenciais do Tautulli Manager...
+2026-04-27 18:02:20,581 - app.services.tautulli.api_client - INFO - Configuração do TautulliApiClient carregada com sucesso.
+2026-04-27 18:02:20,645 - app.services.tautulli_manager - INFO - Cache de estatísticas do Tautulli invalidado.
+2026-04-27 18:02:20,645 - app.services.plex.connection - INFO - A iniciar conexão com o servidor Plex...
+2026-04-27 18:02:21,266 - app.services.plex.connection - INFO - Conexão estabelecida com sucesso com o servidor: NsFlixMedia
+2026-04-27 18:02:21,283 - app.services.plex.user_manager - INFO - Cache de utilizadores do Plex invalidado.

@@ -202,10 +202,13 @@ def create_app() -> Flask:
 
     @app.context_processor
     def inject_global_vars():
+        from .config import load_or_create_config
+        panel_cfg = load_or_create_config()
         return {
             'current_locale': get_locale(),
             'app_title': app.config.get('APP_TITLE', 'Painel Plex'),
-            'cache_buster': int(datetime.now().timestamp())
+            'cache_buster': int(datetime.now().timestamp()),
+            'panel_config': panel_cfg
         }
 
     @app.errorhandler(429)

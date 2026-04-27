@@ -55,11 +55,10 @@
 <body class="bg-gray-50 dark:bg-[#0b1120] text-gray-800 dark:text-gray-300 transition-colors duration-300 min-h-screen flex flex-col antialiased selection:bg-yellow-200 selection:text-yellow-900 dark:selection:bg-yellow-900/50 dark:selection:text-yellow-200">
 
     <!-- Broadcast Banner Global -->
-    {% set app_config = config if config else (current_app.config if current_app else {}) %}
-    {% if app_config.get('SYSTEM_BROADCAST_ENABLED') and app_config.get('SYSTEM_BROADCAST_MESSAGE') %}
+    {% if panel_config and panel_config.get('SYSTEM_BROADCAST_ENABLED') and panel_config.get('SYSTEM_BROADCAST_MESSAGE') %}
     <div class="bg-gradient-to-r from-yellow-400 to-yellow-500 text-yellow-900 px-4 py-2.5 shadow-md flex items-center justify-center relative z-50">
         <svg class="w-5 h-5 mr-2.5 flex-shrink-0 animate-pulse" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-        <span class="text-sm font-bold tracking-wide uppercase">{{ app_config.get('SYSTEM_BROADCAST_MESSAGE') }}</span>
+        <span class="text-sm font-bold tracking-wide uppercase">{{ panel_config.get('SYSTEM_BROADCAST_MESSAGE') }}</span>
     </div>
     {% endif %}
 

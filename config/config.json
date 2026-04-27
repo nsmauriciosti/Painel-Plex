@@ -3,7 +3,7 @@
     "SECRET_KEY": "bfb4e276b4e320e0ddd0a77588f00b60",
     "INTERNAL_TRIGGER_KEY": "a934b8aeb119a62f56e37c8b04d7f4beff3f3606423dd0dceb34c6a359788865",
     "APP_TITLE": "Painel Plex",
-    "APP_BASE_URL": "",
+    "APP_BASE_URL": "https://nsflix.mauriciosti.xyz",
     "LOG_LEVEL": "INFO",
     "LOG_FILE": "/app/app/../config/app.log",
     "LOG_MAX_BYTES": 1048576,
@@ -98,5 +98,7 @@
     "SHORT_LINK_CLEANUP_ENABLED": true,
     "SHORT_LINK_MAX_AGE_DAYS": 30,
     "TMDB_API_KEY": "3df1f9c1de46a10003037a555b0161b3",
-    "REFERRAL_BONUS_DAYS": 5
+    "REFERRAL_BONUS_DAYS": 5,
+    "SYSTEM_BROADCAST_ENABLED": false,
+    "SYSTEM_BROADCAST_MESSAGE": "teste"
 }
