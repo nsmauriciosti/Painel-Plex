@@ -151,6 +151,76 @@ class MercadoPagoManager:
             logger.error(f"Erro ao criar cobrança PIX no Mercado Pago: {e}", exc_info=True)
             return {"success": False, "message": "Ocorreu um erro ao comunicar com o serviço de pagamentos."}
 
+    def create_pix_subscription(self, user_info, price, screens, coupon_code=None):
+        """
+        Cria um Mandato/Assinatura de PIX Automático no Mercado Pago.
+        """
+        if not self.sdk:
+            return {"success": False, "message": "Credenciais do Mercado Pago não configuradas."}
+
+        external_reference = str(uuid.uuid4())
+        item_title = f"Assinatura Mensal Plex - {screens} Tela(s) | User: {user_info.get('username')}" if screens > 0 else f"Assinatura Mensal Plex - Padrão | User: {user_info.get('username')}"
+        
+        # Estrutura típica do Preapproval (Assinatura) adaptada para PIX Automático
+        subscription_data = {
+            "reason": item_title,
+            "external_reference": external_reference,
+            "payer_email": user_info.get('email'),
+            "auto_recurring": {
+                "frequency": 1,
+                "frequency_type": "months",
+                "transaction_amount": float(price),
+                "currency_id": "BRL"
+            },
+            "back_url": f"{self.config.get('APP_BASE_URL', '').rstrip('/')}/account",
+            "status": "pending"
+        }
+
+        try:
+            logger.info(f"A criar mandato PIX Automático no MP para '{user_info['username']}'.")
+            
+            import requests
+            headers = {
+                "Authorization": f"Bearer {self.config.get('MERCADOPAGO_ACCESS_TOKEN').strip()}",
+                "Content-Type": "application/json"
+            }
+            
+            api_response = requests.post(
+                "https://api.mercadopago.com/preapproval",
+                json=subscription_data,
+                headers=headers
+            )
+            
+            if api_response.status_code == 201:
+                preapproval = api_response.json()
+                mandato_id = str(preapproval['id'])
+                
+                # Regista a assinatura no banco de dados
+                self.data_manager.create_pix_subscription(
+                    subscription_id=mandato_id,
+                    plex_user_id=user_info['plex_user_id'],
+                    username=user_info['username'],
+                    value=price,
+                    provider='MERCADOPAGO',
+                    screens=screens
+                )
+                
+                return {
+                    "success": True,
+                    "payment_id": mandato_id,
+                    "is_subscription": True,
+                    "init_point": preapproval.get("init_point"),
+                    "message": "Mandato criado. Redirecione o usuário ou mostre o código para aprovação no App do banco."
+                }
+            else:
+                error_data = api_response.json()
+                error_msg = error_data.get('message', 'Falha ao criar assinatura PIX no Mercado Pago.')
+                logger.error(f"Falha ao criar assinatura MP HTTP {api_response.status_code}: {error_data}")
+                return {"success": False, "message": error_msg}
+        except Exception as e:
+            logger.error(f"Erro ao criar assinatura PIX Automático no MP: {e}", exc_info=True)
+            return {"success": False, "message": "Ocorreu um erro ao comunicar com o Mercado Pago."}
+
     def get_payment_details(self, payment_id):
         """Consulta os detalhes de um pagamento no Mercado Pago."""
         if not self.sdk:

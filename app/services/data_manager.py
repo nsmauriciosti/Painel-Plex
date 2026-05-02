@@ -11,7 +11,7 @@ from functools import wraps
 
 from ..extensions import db
 from ..models import (
-    Invitation, BlockedUser, UserProfile, PixPayment, Notification, 
+    Invitation, BlockedUser, UserProfile, PixPayment, PixSubscription, Notification, 
     UnlockedAchievement, ShortLink, Coupon, CouponUsage, Task, StreamTerminationLog
 )
 from sqlalchemy import func, extract, not_
@@ -435,6 +435,31 @@ class DataManager:
 
     def get_pix_payment(self, txid):
         return self._row_to_dict(PixPayment.query.get(txid))
+
+    @db_transaction
+    def create_pix_subscription(self, subscription_id, plex_user_id, username, value, provider, screens):
+        subscription = PixSubscription.query.get(subscription_id) or PixSubscription(id=subscription_id)
+        subscription.user_plex_id = plex_user_id
+        subscription.username = username
+        subscription.value = value
+        subscription.provider = provider
+        subscription.created_at = datetime.now(timezone.utc)
+        subscription.status = 'PENDING'
+        subscription.screens = screens
+        db.session.add(subscription)
+        return self._row_to_dict(subscription)
+
+    def get_pix_subscription(self, subscription_id):
+        sub = PixSubscription.query.get(subscription_id)
+        return self._row_to_dict(sub) if sub else None
+
+    @db_transaction
+    def update_pix_subscription_status(self, subscription_id, status):
+        subscription = PixSubscription.query.get(subscription_id)
+        if subscription: 
+            subscription.status = status
+            return True
+        return False
 
     @db_transaction
     def update_pix_payment_status(self, txid, status):

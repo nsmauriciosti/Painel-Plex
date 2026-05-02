@@ -103,6 +103,22 @@ document.addEventListener('DOMContentLoaded', async () => {
         paymentSection.innerHTML = `
             ${optionsHtml}
             
+            <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700/50">
+                <label class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">Forma de Renovação</label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <label class="flex items-center p-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50/30 dark:has-[:checked]:bg-blue-900/10 cursor-pointer transition-all hover:border-blue-400 group">
+                        <input type="radio" name="payment-type" value="single" checked class="peer appearance-none w-5 h-5 border-2 border-gray-300 dark:border-gray-500 rounded-full checked:border-blue-500 transition-colors cursor-pointer bg-white dark:bg-gray-700 relative after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-2.5 after:h-2.5 after:bg-blue-500 after:rounded-full after:scale-0 checked:after:scale-100 after:transition-transform">
+                        <span class="ml-3 font-bold text-gray-800 dark:text-gray-200">Pix Único<br><span class="text-xs font-normal text-gray-500 dark:text-gray-400">Renovação Manual</span></span>
+                    </label>
+                    ${providers && providers.mercadopago ? `
+                    <label class="flex items-center p-3 rounded-xl border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50/30 dark:has-[:checked]:bg-blue-900/10 cursor-pointer transition-all hover:border-blue-400 group">
+                        <input type="radio" name="payment-type" value="subscription" class="peer appearance-none w-5 h-5 border-2 border-gray-300 dark:border-gray-500 rounded-full checked:border-blue-500 transition-colors cursor-pointer bg-white dark:bg-gray-700 relative after:content-[''] after:absolute after:top-1/2 after:left-1/2 after:-translate-x-1/2 after:-translate-y-1/2 after:w-2.5 after:h-2.5 after:bg-blue-500 after:rounded-full after:scale-0 checked:after:scale-100 after:transition-transform">
+                        <span class="ml-3 font-bold text-gray-800 dark:text-gray-200">Pix Automático<br><span class="text-xs font-normal text-gray-500 dark:text-gray-400">Mensal recorrente</span></span>
+                    </label>
+                    ` : ''}
+                </div>
+            </div>
+
             <!-- Secção de Cupão Premium -->
             <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700/50">
                 <label for="couponCodeInput" class="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 uppercase tracking-wider">Código Promocional</label>
@@ -219,24 +235,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Iniciar Pagamento
         pixBtn?.addEventListener('click', () => {
+            const paymentType = document.querySelector('input[name="payment-type"]:checked')?.value || 'single';
             const payload = {
                 token: token,
                 username: baseUsername,
                 screens: screens,
-                coupon_code: validatedCouponCode
+                coupon_code: validatedCouponCode,
+                is_subscription: paymentType === 'subscription'
             };
             initiatePixPayment(payload, providers);
         });
     };
 
     async function initiatePixPayment(payload, providers) {
-        const activeProviders = Object.keys(providers).filter(p => providers[p]).map(p => p.toUpperCase());
+        let activeProviders = Object.keys(providers).filter(p => providers[p]).map(p => p.toUpperCase());
         const btnTextContent = document.getElementById('btn-text-content').textContent;
         const isFree = btnTextContent === i18n.activateFreeSubscription;
 
         if (isFree) {
             await generatePix(payload); // Ignora provedores se for gratuito
             return;
+        }
+
+        if (payload.is_subscription) {
+            activeProviders = activeProviders.filter(p => p === 'MERCADOPAGO');
         }
 
         if (activeProviders.length === 1) {
@@ -295,7 +317,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         let result = null;
 
         try {
-            result = await fetchAPI(urls.createChargeUrl, 'POST', payload);
+            const endpoint = payload.is_subscription ? '/api/payments/create-subscription' : urls.createChargeUrl;
+            result = await fetchAPI(endpoint, 'POST', payload);
 
             if (result && result.success && result.free_renewal) {
                 const isReactivation = container.dataset.isReactivation === 'true';
@@ -304,11 +327,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             if(result && result.success) {
-                paymentSection.style.display = 'none';
-                pixDisplay.style.display = 'block';
-                document.getElementById('pix-qr-code').src = result.qr_code_image;
-                document.getElementById('pix-copy-paste').value = result.pix_copy_paste;
-                startPaymentStatusPolling(result.payment_id || result.txid);
+                if (result.is_subscription && result.init_point) {
+                    showToast('Redirecionando para aprovação do Pix Automático...', 'success');
+                    setTimeout(() => { window.location.href = result.init_point; }, 1500);
+                } else {
+                    paymentSection.style.display = 'none';
+                    pixDisplay.style.display = 'block';
+                    document.getElementById('pix-qr-code').src = result.qr_code_image;
+                    document.getElementById('pix-copy-paste').value = result.pix_copy_paste;
+                    startPaymentStatusPolling(result.payment_id || result.txid);
+                }
             } else {
                 showToast(result.message, 'error');
             }

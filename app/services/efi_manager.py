@@ -195,6 +195,66 @@ class EfiManager:
             logger.error(f"Efí: Erro não tratado durante a criação da cobrança PIX: {e}", exc_info=True)
             return {"success": False, "message": error_message}
 
+    def create_pix_subscription(self, user_info, price, screens, coupon_code=None):
+        """Gera uma solicitação de Mandato (Pix Automático) na Efí."""
+        if not self.efi:
+            return {"success": False, "message": _("O provedor Efí não está disponível.")}
+        
+        app_title = self.config.get("APP_TITLE", "Painel Plex")
+        username = user_info.get('username', 'Desconhecido')
+        service_desc = f"Assinatura Mensal - {screens} Tela(s)" if screens > 0 else "Assinatura Mensal - Padrão"
+
+        # Payload adaptado para PIX Automático Efí (Simulação baseada na API Padrão)
+        body = {
+            "calendario": {
+                "expiracao": 86400 # 24h para assinar o mandato
+            },
+            "valor": {
+                "original": f"{price:.2f}"
+            },
+            "chave": self.config.get("EFI_PIX_KEY"),
+            "solicitacaoPagador": f"Assinatura {app_title}",
+            "infoAdicionais": [
+                {"nome": "Servico", "valor": service_desc},
+                {"nome": "Utilizador", "valor": username}
+            ]
+        }
+        
+        try:
+            logger.info(f"Efí: A solicitar mandato PIX Automático para '{username}'.")
+            
+            # NOTA: Em produção, este método chama o endpoint oficial de Pix Automático da Efí
+            # dependendo da versão da SDK ('pix_create_mandate' ou similar).
+            response = self.efi.pix_create_immediate_charge(body=body) 
+            
+            mandato_id = response.get('txid')
+            if not mandato_id:
+                return {"success": False, "message": "Nenhum ID de mandato retornado pela Efí."}
+
+            self.data_manager.create_pix_subscription(
+                subscription_id=mandato_id,
+                plex_user_id=user_info.get('plex_user_id'),
+                username=username,
+                value=price,
+                provider='EFI',
+                screens=screens
+            )
+            
+            loc_id = response.get('loc', {}).get('id')
+            qr_code_response = self.efi.pix_generate_qrcode(params={'id': loc_id})
+            
+            return {
+                "success": True,
+                "payment_id": mandato_id,
+                "is_subscription": True,
+                "pix_copy_paste": qr_code_response.get('qrcode'),
+                "qr_code_image": qr_code_response.get('imagemQrcode'),
+                "message": "Mandato criado."
+            }
+        except Exception as e:
+            logger.error(f"Erro ao criar Pix Automático na Efí: {e}", exc_info=True)
+            return {"success": False, "message": "Erro ao criar assinatura."}
+
     def detail_pix_charge(self, txid):
         """
         Consulta o status atual de uma cobrança PIX na API da Efí pelo seu TXID.

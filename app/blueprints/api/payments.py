@@ -219,6 +219,109 @@ def _process_successful_payment(txid):
     thread.daemon = True
     thread.start()
 
+def _run_subscription_renewal_in_thread(app, subscription_id=None, username=None, screens=None, value=None, provider=None):
+    """Renova automaticamente a conta com base numa assinatura Pix Automático."""
+    MAX_RETRIES = 5
+    RETRY_DELAY = 2 
+    
+    for attempt in range(MAX_RETRIES):
+        try:
+            with app.test_request_context('/'):
+                if subscription_id:
+                    subscription = extensions.data_manager.get_pix_subscription(subscription_id)
+                    if not subscription:
+                        return
+                    
+                    if subscription.get('status') == 'PENDING':
+                        extensions.data_manager.update_pix_subscription_status(subscription_id, 'ACTIVE')
+                        
+                    plex_user_id = subscription['user_plex_id']
+                    screens_to_renew = subscription.get('screens', screens)
+                    renew_value = subscription.get('value', value)
+                    sub_provider = subscription.get('provider', provider)
+                else:
+                    # Se apenas tivermos o username (via Mercado Pago description match)
+                    profile_data = extensions.data_manager.get_user_profile_by_username(username)
+                    if not profile_data:
+                        logger.error(f"Utilizador '{username}' não encontrado para renovação de assinatura.")
+                        return
+                    plex_user_id = profile_data['plex_user_id']
+                    screens_to_renew = screens
+                    renew_value = value
+                    sub_provider = provider
+
+                profile = extensions.data_manager.get_user_profile(plex_user_id)
+                is_reactivation = profile.get('status') == 'inactive'
+                user_found_in_plex = False
+
+                if is_reactivation:
+                    logger.info(f"Reativando conta via Assinatura (Pix Automático) para o utilizador '{profile['username']}'.")
+                    user_found_in_plex = _handle_reactivation_invite(profile, plex_user_id)
+
+                user_info_for_renewal = extensions.plex_manager.get_user_by_id(plex_user_id)
+                if not user_info_for_renewal and is_reactivation:
+                    user_info_for_renewal = { 'id': plex_user_id, 'username': profile.get('username'), 'email': profile.get('email') }
+
+                if user_info_for_renewal:
+                    config = load_or_create_config()
+                    expiration_time = config.get("UNIVERSAL_EXPIRATION_TIME", "23:59") if config.get("UNIVERSAL_EXPIRATION_ENABLED") else None
+                    renewal_base_mode = 'today' if is_reactivation else 'expiry_date'
+                    
+                    new_expiration_date = extensions.plex_manager.renew_subscription(
+                        plex_user_id, 1, screens=screens_to_renew, base_mode=renewal_base_mode,
+                        expiration_time_str=expiration_time, is_reactivation=is_reactivation
+                    )
+                    
+                    if is_reactivation and not user_found_in_plex:
+                        post_renewal_profile = extensions.data_manager.get_user_profile(plex_user_id)
+                        if post_renewal_profile.get('status') == 'active':
+                            post_renewal_profile['status'] = 'inactive'
+                            extensions.data_manager.set_user_profile(plex_user_id, post_renewal_profile)
+
+                    try:
+                        refreshed_profile = extensions.data_manager.get_user_profile(plex_user_id)
+                        extensions.plex_manager.notifier_manager.send_renewal_notification(user_info_for_renewal, new_expiration_date, refreshed_profile)
+                    except Exception as e:
+                        logger.error(f"Erro ao enviar notificação de assinatura para '{profile['username']}': {e}")
+
+                    extensions.data_manager.add_manual_payment(
+                        plex_user_id=plex_user_id, username=profile['username'], value=renew_value or 0.0,
+                        description=f"Renovação Automática (Assinatura {sub_provider})",
+                        payment_date_str=datetime.now(timezone.utc).isoformat()
+                    )
+                    
+                    extensions.data_manager.create_notification(
+                        message=_("Renovação Automática de %(value)s processada com sucesso.", value=f"R$ {renew_value:.2f}" if renew_value else "Assinatura"), 
+                        category='success', link=url_for('main.account_page'), user_plex_id=plex_user_id
+                    )
+
+                extensions.db.session.commit()
+                logger.info(f"Processamento de Assinatura para utilizador {profile['username']} concluído com sucesso.")
+                
+                if extensions.socketio:
+                    extensions.socketio.emit('user_list_updated', { 'message': _("Renovação automática concluída.") }, namespace='/dashboard')
+                return
+
+        except OperationalError as e:
+            if "database is locked" in str(e):
+                with app.app_context(): extensions.db.session.rollback()
+                if attempt < MAX_RETRIES - 1:
+                    time.sleep(RETRY_DELAY)
+                else:
+                    logger.error("Erro persistente de base de dados bloqueada na assinatura.", exc_info=True)
+            else:
+                break
+        except Exception as e:
+            logger.error(f"Erro no processamento da assinatura: {e}", exc_info=True)
+            with app.app_context(): extensions.db.session.rollback()
+            break
+
+def _process_subscription_renewal(subscription_id=None, username=None, screens=None, value=None, provider=None):
+    app = current_app._get_current_object()
+    thread = threading.Thread(target=_run_subscription_renewal_in_thread, args=(app, subscription_id, username, screens, value, provider))
+    thread.daemon = True
+    thread.start()
+
 # ==========================================
 # ROTAS DE GERAÇÃO E ESTADO DE COBRANÇAS
 # ==========================================
@@ -411,6 +514,52 @@ def create_charge_route():
 
     return jsonify(result)
 
+@payments_api_bp.route('/create-subscription', methods=['POST'])
+@limiter.limit("3 per minute")
+def create_subscription_route():
+    data = request.json
+    provider = data.get('provider')
+    screens_str = data.get('screens')
+    token = data.get('token')
+
+    plex_user_id, username = None, None
+
+    if token:
+        profile_model = UserProfile.query.filter_by(payment_token=token).first()
+        if profile_model:
+            plex_user_id, username = profile_model.plex_user_id, profile_model.username
+    elif current_user.is_authenticated:
+        plex_user_id, username = int(current_user.id), current_user.username
+    
+    if not plex_user_id:
+        return jsonify({"success": False, "message": _("Utilizador não especificado ou token inválido.")}), 400
+
+    profile = extensions.data_manager.get_user_profile(plex_user_id)
+    if not profile:
+        return jsonify({"success": False, "message": _("Perfil não encontrado.")}), 404
+
+    user_email = profile.get('email')
+    user_info = {
+        "plex_user_id": plex_user_id, "username": username,
+        "name": profile.get('name', username), "email": user_email
+    }
+
+    price_calculation = extensions.pricing_manager.calculate_price(screens_str, None, plex_user_id)
+    if not price_calculation.get("success"):
+        return jsonify(price_calculation), 400
+
+    final_price = price_calculation.get("discounted_price")
+
+    config = load_or_create_config()
+    result = {"success": False, "message": _("O provedor %(provider)s não está habilitado para assinaturas.", provider=provider)}
+    
+    if provider == 'EFI' and config.get('EFI_ENABLED'):
+        result = extensions.efi_manager.create_pix_subscription(user_info, final_price, int(screens_str))
+    elif provider == 'MERCADOPAGO' and config.get('MERCADOPAGO_ENABLED'):
+        result = extensions.mercado_pago_manager.create_pix_subscription(user_info, final_price, int(screens_str))
+
+    return jsonify(result)
+
 @payments_api_bp.route('/status/<string:txid>')
 @limiter.limit("60 per minute")
 def get_payment_status_route(txid):
@@ -493,6 +642,13 @@ def efi_webhook():
             txid = pix_notification.get('txid')
             
             if txid:
+                # Confirmação dupla de segurança para Assinatura (se for preapproval loc)
+                subscription = extensions.data_manager.get_pix_subscription(txid)
+                if subscription:
+                    logger.info(f"Recebido pagamento recorrente (Assinatura Efí) para txid: {txid}")
+                    _process_subscription_renewal(subscription_id=txid)
+                    continue
+
                 # Se já processado pelo frontend, ignora
                 payment = extensions.data_manager.get_pix_payment(txid)
                 if payment and payment.get('status') == 'CONCLUIDA':
@@ -521,6 +677,27 @@ def mercadopago_webhook():
             payment_id = str(data.get("data", {}).get("id"))
             mp_status_result = extensions.mercado_pago_manager.get_payment_details(payment_id)
             if mp_status_result.get("success") and mp_status_result.get("data", {}).get("status") == "approved":
+                payment_data = mp_status_result.get("data", {})
+                description = payment_data.get("description", "")
+                
+                # Check se é um pagamento de assinatura
+                if "Assinatura Mensal Plex" in description and "| User: " in description:
+                    logger.info(f"Pagamento de Assinatura {payment_id} confirmado via Webhook Mercado Pago.")
+                    try:
+                        # Extrai o username: "Assinatura Mensal Plex - 1 Tela(s) | User: mauricio"
+                        username = description.split("| User: ")[1].strip()
+                        value = payment_data.get("transaction_amount", 0.0)
+                        screens = 0
+                        if "Tela(s)" in description:
+                            import re
+                            match = re.search(r'- (\d+) Tela', description)
+                            if match: screens = int(match.group(1))
+                        
+                        _process_subscription_renewal(username=username, screens=screens, value=value, provider="MERCADOPAGO")
+                        return jsonify(status="received"), 200
+                    except Exception as e:
+                        logger.error(f"Erro ao processar webhook de assinatura MP: {e}")
+
                 logger.info(f"Pagamento {payment_id} confirmado via Webhook Mercado Pago. A iniciar renovação.")
                 _process_successful_payment(payment_id)
     except Exception as e:

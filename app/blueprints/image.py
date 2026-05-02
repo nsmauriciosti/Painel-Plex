@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Tuple, Optional
 
 from flask import Blueprint, request, abort, send_from_directory, redirect
-from urllib.parse import urlparse
+from urllib.parse import urlparse, parse_qs
 
 # Importa os gestores para aceder às configurações e tokens de forma segura
 from ..extensions import plex_manager, tautulli_manager, limiter
@@ -109,7 +109,6 @@ def build_final_url(source: str, image_path: str) -> Tuple[Optional[str], dict]:
         if tautulli_manager and tautulli_manager.api_client.is_configured:
             # O endpoint /pms_image_proxy requer sessão (cookie). Devemos usar a API v2
             # que aceita autenticação via apikey.
-            from urllib.parse import urlparse, parse_qs
             parsed_path = urlparse(image_path)
             query_params = parse_qs(parsed_path.query)
             final_url = f"{tautulli_manager.api_client.base_url}/api/v2"

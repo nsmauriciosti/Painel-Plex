@@ -337,6 +337,21 @@ const setupPaymentSection = (prices, providers, canDowngrade) => {
     // Injetar HTML Final
     dom.paymentSection.innerHTML = `
         ${optionsHtml}
+        <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-700">
+            <label class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2 block">Forma de Renovação</label>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="flex items-center p-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50/30 dark:has-[:checked]:bg-blue-900/10 cursor-pointer transition-all hover:border-blue-400">
+                    <input type="radio" name="payment-type" value="single" checked class="h-4 w-4 text-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700">
+                    <span class="ml-2 font-bold text-gray-800 dark:text-gray-200">Pagamento Único<br><span class="text-xs font-normal text-gray-500 dark:text-gray-400">Pix válido por 20 minutos</span></span>
+                </label>
+                ${providers && providers.mercadopago ? `
+                <label class="flex items-center p-3 rounded-lg border-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50/30 dark:has-[:checked]:bg-blue-900/10 cursor-pointer transition-all hover:border-blue-400">
+                    <input type="radio" name="payment-type" value="subscription" class="h-4 w-4 text-blue-500 focus:ring-blue-500 bg-white dark:bg-gray-700">
+                    <span class="ml-2 font-bold text-gray-800 dark:text-gray-200">Pix Automático<br><span class="text-xs font-normal text-gray-500 dark:text-gray-400">Mensal (Renova sozinho)</span></span>
+                </label>
+                ` : ''}
+            </div>
+        </div>
         <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
             <label for="couponCodeInput" class="text-sm font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Código de Desconto</label>
             <div class="flex gap-2 mt-2">
@@ -411,17 +426,22 @@ const bindPaymentEvents = (providers) => {
     // Iniciar Pagamento
     pixBtn?.addEventListener('click', () => {
         const plan = document.querySelector('input[name="payment-plan"]:checked');
-        if (plan) handlePixGenerationRequest({ screens: plan.value, coupon_code: state.validatedCouponCode }, providers);
+        const paymentType = document.querySelector('input[name="payment-type"]:checked')?.value || 'single';
+        if (plan) handlePixGenerationRequest({ screens: plan.value, coupon_code: state.validatedCouponCode, is_subscription: paymentType === 'subscription' }, providers);
     });
 };
 
 const handlePixGenerationRequest = async (payload, providers) => {
-    const activeProviders = Object.keys(providers).filter(p => providers[p]).map(p => p.toUpperCase());
+    let activeProviders = Object.keys(providers).filter(p => providers[p]).map(p => p.toUpperCase());
     const isFree = document.getElementById('initiatePixButton').textContent === state.i18n.activateFreeSubscription;
 
     if (isFree) {
         await executePixGeneration(payload); // Ignora provedores se for gratuito
         return;
+    }
+
+    if (payload.is_subscription) {
+        activeProviders = activeProviders.filter(p => p === 'MERCADOPAGO');
     }
 
     if (activeProviders.length === 1) {
@@ -459,12 +479,16 @@ const executePixGeneration = async (payload) => {
     btn.innerHTML = `<svg class="animate-spin h-5 w-5 mr-2 inline-block" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> A processar...`;
 
     try {
-        const result = await fetchAPI(state.urls.createChargeUrl, 'POST', payload);
+        const endpoint = payload.is_subscription ? '/api/payments/create-subscription' : state.urls.createChargeUrl;
+        const result = await fetchAPI(endpoint, 'POST', payload);
         
         if (result && result.success) {
             if (result.free_renewal) {
                 showToast(result.message, 'success');
                 setTimeout(() => window.location.reload(), 2500);
+            } else if (result.is_subscription && result.init_point) {
+                showToast('Redirecionando para aprovação do Pix Automático...', 'success');
+                setTimeout(() => { window.location.href = result.init_point; }, 1500);
             } else {
                 dom.paymentSection.style.display = 'none';
                 dom.pixDisplay.style.display = 'block';

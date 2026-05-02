@@ -136,6 +136,17 @@ class PixPayment(db.Model):
     description = db.Column(db.String(100), nullable=True)
     coupon_code = db.Column(db.String, db.ForeignKey('coupons.code'), nullable=True)
 
+class PixSubscription(db.Model):
+    __tablename__ = 'pix_subscriptions'
+    id = db.Column(db.String, primary_key=True)
+    user_plex_id = db.Column(db.Integer, db.ForeignKey('user_profiles.plex_user_id'), nullable=False, index=True)
+    username = db.Column(db.String, nullable=False)
+    value = db.Column(db.Float, nullable=False)
+    status = db.Column(db.String, nullable=False, default='PENDING')
+    provider = db.Column(db.String)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    screens = db.Column(db.Integer, nullable=True)
+    
 class Notification(db.Model):
     __tablename__ = 'notifications'
     id = db.Column(db.Integer, primary_key=True)
