@@ -199,7 +199,9 @@ def api_settings():
             'WHATSAPP_TRIAL_END_MESSAGE_TEMPLATE', 'WHATSAPP_WELCOME_MESSAGE_TEMPLATE',
             'KILL_TRANSCODE_ENABLED', 'TERMINATION_MSG_TRANSCODE',
             'SYSTEM_BROADCAST_ENABLED', 'SYSTEM_BROADCAST_MESSAGE',
-            'TMDB_API_KEY', 'REFERRAL_BONUS_DAYS'
+            'TMDB_API_KEY', 'REFERRAL_BONUS_DAYS',
+            'BACKUP_ENABLED', 'BACKUP_TIME', 'BACKUP_LOCAL_RETENTION_DAYS',
+            'BACKUP_GDRIVE_ENABLED', 'BACKUP_GDRIVE_CREDENTIALS', 'BACKUP_GDRIVE_FOLDER_ID'
         ]
         numeric_fields = [
             'DAYS_TO_REMOVE_BLOCKED_USER', 'DAYS_TO_NOTIFY_EXPIRATION',
@@ -209,7 +211,7 @@ def api_settings():
             'ACHIEVEMENT_SERIES_BINGER_BRONZE', 'ACHIEVEMENT_SERIES_BINGER_SILVER', 'ACHIEVEMENT_SERIES_BINGER_GOLD',
             'ACHIEVEMENT_TIME_TRAVELER_BRONZE', 'ACHIEVEMENT_TIME_TRAVELER_SILVER', 'ACHIEVEMENT_TIME_TRAVELER_GOLD',
             'ACHIEVEMENT_DIRECTOR_FAN_BRONZE', 'ACHIEVEMENT_DIRECTOR_FAN_SILVER', 'ACHIEVEMENT_DIRECTOR_FAN_GOLD',
-            'STREAM_CHECK_INTERVAL_SECONDS', 'REFERRAL_BONUS_DAYS'
+            'STREAM_CHECK_INTERVAL_SECONDS', 'REFERRAL_BONUS_DAYS', 'BACKUP_LOCAL_RETENTION_DAYS'
         ]
 
         if 'SCREEN_PRICES' in new_data:
@@ -284,6 +286,7 @@ def api_settings():
         reschedule_job('cleanup_job', 'CLEANUP_TIME', old_config, config_to_update)
         reschedule_job('cleanup_image_cache_job', 'IMAGE_CACHE_CLEANUP_TIME', old_config, config_to_update)
         reschedule_job('stream_check_job', 'STREAM_CHECK_INTERVAL_SECONDS', old_config, config_to_update, trigger_type='interval')
+        reschedule_job('backup_job', 'BACKUP_TIME', old_config, config_to_update)
 
         success, message = plex_manager.reload_connections()
         return jsonify({"success": success, "message": message})

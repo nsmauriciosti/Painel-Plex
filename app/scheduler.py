@@ -258,6 +258,15 @@ def cleanup_image_cache_job():
         except Exception as e:
             logger.error(f"Erro ao limpar o cache de imagens: {e}", exc_info=True)
 
+@single_instance_job('backup_job')
+def backup_job():
+    if not _app: return
+    with _app.app_context():
+        from . import extensions
+        try:
+            extensions.backup_service.run_backup()
+        except Exception as e:
+            logger.error(f"Erro no backup_job: {e}", exc_info=True)
 
 @single_instance_job('update_user_xp_job')
 def update_user_xp_job():
@@ -347,13 +356,19 @@ def setup_scheduler(app):
         replace_existing=True, misfire_grace_time=3600
     )
 
-    if config.get("IMAGE_CACHE_CLEANUP_ENABLED", False):
-        cache_cleanup_time_parts = config.get("IMAGE_CACHE_CLEANUP_TIME", "04:00").split(':')
-        extensions.scheduler.add_job(
-            id='cleanup_image_cache_job', func=cleanup_image_cache_job,
-            trigger=CronTrigger(hour=int(cache_cleanup_time_parts[0]), minute=int(cache_cleanup_time_parts[1]), timezone=tz_str),
-            replace_existing=True, misfire_grace_time=3600
-        )
+    cache_cleanup_time_parts = config.get("IMAGE_CACHE_CLEANUP_TIME", "04:00").split(':')
+    extensions.scheduler.add_job(
+        id='cleanup_image_cache_job', func=cleanup_image_cache_job,
+        trigger=CronTrigger(hour=int(cache_cleanup_time_parts[0]), minute=int(cache_cleanup_time_parts[1]), timezone=tz_str),
+        replace_existing=True, misfire_grace_time=3600
+    )
+
+    backup_time_parts = config.get("BACKUP_TIME", "02:00").split(':')
+    extensions.scheduler.add_job(
+        id='backup_job', func=backup_job,
+        trigger=CronTrigger(hour=int(backup_time_parts[0]), minute=int(backup_time_parts[1]), timezone=tz_str),
+        replace_existing=True, misfire_grace_time=3600
+    )
 
     # Job de Atualização de XP - Roda todos os dias às 05:00
     extensions.scheduler.add_job(

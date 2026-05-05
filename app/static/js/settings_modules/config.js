@@ -93,6 +93,12 @@ export const fieldMap = {
     'REFERRAL_BONUS_DAYS': { type: 'number', default: 5 },
     'SYSTEM_BROADCAST_ENABLED': { type: 'checkbox', default: false },
     'SYSTEM_BROADCAST_MESSAGE': { type: 'text', default: '' },
+    'BACKUP_ENABLED': { type: 'checkbox', default: false },
+    'BACKUP_TIME': { type: 'text', default: '02:00' },
+    'BACKUP_LOCAL_RETENTION_DAYS': { type: 'number', default: 7 },
+    'BACKUP_GDRIVE_ENABLED': { type: 'checkbox', default: false },
+    'BACKUP_GDRIVE_CREDENTIALS': { type: 'textarea', default: '' },
+    'BACKUP_GDRIVE_FOLDER_ID': { type: 'text', default: '' },
 };
 
 if (scriptTag) {

@@ -63,3 +63,4 @@ bpix_manager = None
 overseerr_manager = None
 link_shortener = None
 pricing_manager = None
+backup_service = None
