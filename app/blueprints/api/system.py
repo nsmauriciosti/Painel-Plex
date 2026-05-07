@@ -121,12 +121,15 @@ def gdrive_auth_url():
         # Criação do Flow
         flow = Flow.from_client_config(client_config, scopes=scopes)
         
-        # Construir a URL de redirect (suportando proxies reversos com HTTPS)
-        base_url = request.host_url.rstrip('/')
-        if request.headers.get('X-Forwarded-Proto', 'http') == 'https' and base_url.startswith('http://'):
-            base_url = base_url.replace('http://', 'https://')
-            
-        flow.redirect_uri = base_url + url_for('system_api.gdrive_callback')
+        # Construir a URL de redirect usando APP_BASE_URL (mais seguro para proxies)
+        app_base_url = config.get('APP_BASE_URL', '').rstrip('/')
+        if not app_base_url:
+            # Fallback para request.host_url se APP_BASE_URL não estiver configurado
+            app_base_url = request.host_url.rstrip('/')
+            if request.headers.get('X-Forwarded-Proto', 'http') == 'https' and app_base_url.startswith('http://'):
+                app_base_url = app_base_url.replace('http://', 'https://')
+                
+        flow.redirect_uri = app_base_url + url_for('system_api.gdrive_callback')
         
         auth_url, state = flow.authorization_url(
             access_type='offline',
@@ -168,11 +171,13 @@ def gdrive_callback():
         
         flow = Flow.from_client_config(client_config, scopes=scopes, state=state)
         # Construir a URL de redirect igual à que foi gerada no passo anterior
-        base_url = request.host_url.rstrip('/')
-        if request.headers.get('X-Forwarded-Proto', 'http') == 'https' and base_url.startswith('http://'):
-            base_url = base_url.replace('http://', 'https://')
-            
-        flow.redirect_uri = base_url + url_for('system_api.gdrive_callback')
+        app_base_url = config.get('APP_BASE_URL', '').rstrip('/')
+        if not app_base_url:
+            app_base_url = request.host_url.rstrip('/')
+            if request.headers.get('X-Forwarded-Proto', 'http') == 'https' and app_base_url.startswith('http://'):
+                app_base_url = app_base_url.replace('http://', 'https://')
+                
+        flow.redirect_uri = app_base_url + url_for('system_api.gdrive_callback')
         
         # Recuperar o code_verifier da sessão e injetar no flow
         code_verifier = session.get('gdrive_oauth_code_verifier')
