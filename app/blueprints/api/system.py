@@ -120,8 +120,13 @@ def gdrive_auth_url():
         
         # Criação do Flow
         flow = Flow.from_client_config(client_config, scopes=scopes)
-        # O callback aponta para a nossa própria rota no painel
-        flow.redirect_uri = request.host_url.rstrip('/') + url_for('system_api.gdrive_callback')
+        
+        # Construir a URL de redirect (suportando proxies reversos com HTTPS)
+        base_url = request.host_url.rstrip('/')
+        if request.headers.get('X-Forwarded-Proto', 'http') == 'https' and base_url.startswith('http://'):
+            base_url = base_url.replace('http://', 'https://')
+            
+        flow.redirect_uri = base_url + url_for('system_api.gdrive_callback')
         
         auth_url, state = flow.authorization_url(
             access_type='offline',
@@ -162,7 +167,12 @@ def gdrive_callback():
         scopes = ['https://www.googleapis.com/auth/drive']
         
         flow = Flow.from_client_config(client_config, scopes=scopes, state=state)
-        flow.redirect_uri = request.host_url.rstrip('/') + url_for('system_api.gdrive_callback')
+        # Construir a URL de redirect igual à que foi gerada no passo anterior
+        base_url = request.host_url.rstrip('/')
+        if request.headers.get('X-Forwarded-Proto', 'http') == 'https' and base_url.startswith('http://'):
+            base_url = base_url.replace('http://', 'https://')
+            
+        flow.redirect_uri = base_url + url_for('system_api.gdrive_callback')
         
         # Recuperar o code_verifier da sessão e injetar no flow
         code_verifier = session.get('gdrive_oauth_code_verifier')
