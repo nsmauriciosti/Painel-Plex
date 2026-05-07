@@ -255,6 +255,42 @@ export function initializeEventListeners() {
         dom.mainTabsSelect.addEventListener('change', ui.handleTabsSelectChange);
     }
 
+    const authTypeSelect = document.getElementById('BACKUP_GDRIVE_AUTH_TYPE');
+    if (authTypeSelect) {
+        authTypeSelect.addEventListener('change', ui.toggleGDriveAuthSection);
+    }
+    
+    const btnGDriveOAuth = document.getElementById('btn-gdrive-oauth');
+    if (btnGDriveOAuth) {
+        btnGDriveOAuth.addEventListener('click', async () => {
+            const originalText = btnGDriveOAuth.innerHTML;
+            btnGDriveOAuth.disabled = true;
+            btnGDriveOAuth.innerHTML = `${getSpinner("w-4 h-4")} A gerar link...`;
+            try {
+                // Primeiro precisamos salvar as configs atuais (especialmente o JSON do Client)
+                const clientJsonStr = document.getElementById('BACKUP_GDRIVE_OAUTH_CLIENT').value;
+                if (!clientJsonStr || clientJsonStr.trim() === '') {
+                    showToast('Por favor, insira o JSON do Cliente OAuth primeiro.', 'error');
+                    return;
+                }
+                await api.saveSettings({ BACKUP_GDRIVE_OAUTH_CLIENT: clientJsonStr });
+                
+                const response = await fetch('/api/system/gdrive/auth_url');
+                const data = await response.json();
+                if (data.success && data.auth_url) {
+                    window.location.href = data.auth_url;
+                } else {
+                    showToast(data.message || 'Erro ao gerar link de autorização.', 'error');
+                }
+            } catch(e) {
+                showToast('Falha de conexão.', 'error');
+            } finally {
+                btnGDriveOAuth.disabled = false;
+                btnGDriveOAuth.innerHTML = originalText;
+            }
+        });
+    }
+
     document.querySelectorAll('.show-help-button').forEach(button => button.addEventListener('click', () => dom.helpModal?.classList.remove('hidden')));
     if (dom.closeHelpModalButton) dom.closeHelpModalButton.addEventListener('click', () => dom.helpModal?.classList.add('hidden'));
 

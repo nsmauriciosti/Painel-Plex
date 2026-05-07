@@ -52,6 +52,13 @@ export function populateForm(config) {
     }
     if (dom.logLevelSelector) dom.logLevelSelector.value = config.LOG_LEVEL || 'INFO';
     toggleHmacSection();
+    toggleGDriveAuthSection();
+    
+    const oauthStatus = document.getElementById('oauth_token_status');
+    if (oauthStatus && config.BACKUP_GDRIVE_OAUTH_TOKEN && config.BACKUP_GDRIVE_OAUTH_TOKEN.is_set) {
+        oauthStatus.textContent = 'Sim';
+        oauthStatus.classList.replace('text-red-500', 'text-green-500');
+    }
 }
 
 export async function fetchAndDisplayPlexServers() {
@@ -248,6 +255,22 @@ export function toggleHmacSection() {
             dom.efiHmacSection.classList.add('hidden');
         } else {
             dom.efiHmacSection.classList.remove('hidden');
+        }
+    }
+}
+
+export function toggleGDriveAuthSection() {
+    const authTypeSelect = document.getElementById('BACKUP_GDRIVE_AUTH_TYPE');
+    const serviceAccountSection = document.getElementById('gdrive_service_account_section');
+    const oauthSection = document.getElementById('gdrive_oauth_section');
+    
+    if (authTypeSelect && serviceAccountSection && oauthSection) {
+        if (authTypeSelect.value === 'oauth') {
+            serviceAccountSection.classList.add('hidden');
+            oauthSection.classList.remove('hidden');
+        } else {
+            oauthSection.classList.add('hidden');
+            serviceAccountSection.classList.remove('hidden');
         }
     }
 }

@@ -1,0 +1,80 @@
+<div id="tab-backups" class="tab-content hidden animate-fade-in space-y-8">
+    <div class="mb-4">
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ _('Configurações de Backup') }}</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400">{{ _('Configure a rotina de backup da base de dados e definições do sistema.') }}</p>
+    </div>
+
+    <!-- Cartão de Backup -->
+    <div class="bg-gray-50/50 dark:bg-gray-800/30 p-5 sm:p-6 rounded-2xl border border-gray-200 dark:border-gray-700/50">
+        <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-200 dark:border-gray-700/50">
+            <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                {{ _('Backup do Sistema') }}
+            </h3>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input id="BACKUP_ENABLED" type="checkbox" class="sr-only peer">
+                <div class="w-11 h-6 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-green-500"></div>
+            </label>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pl-1 disablable-input">
+            <div>
+                <label for="BACKUP_TIME" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{{ _('Hora de Execução') }}</label>
+                <input type="time" id="BACKUP_TIME" class="block w-full px-3 py-2.5 text-sm rounded-xl border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-green-500 dark:bg-gray-900 dark:border-gray-600 dark:text-white">
+            </div>
+            <div>
+                <label for="BACKUP_LOCAL_RETENTION_DAYS" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{{ _('Retenção Local (Dias)') }}</label>
+                <input type="number" id="BACKUP_LOCAL_RETENTION_DAYS" class="block w-full px-3 py-2.5 text-sm rounded-xl border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-green-500 dark:bg-gray-900 dark:border-gray-600 dark:text-white" min="1">
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">{{_('Dias para manter os ficheiros de backup localmente.')}}</p>
+            </div>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700/50 disablable-input">
+            <div class="flex items-center justify-between mb-4">
+                <h4 class="text-md font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12.008 0C5.378 0 0 5.378 0 12.008c0 6.63 5.378 12.008 12.008 12.008 6.63 0 12.008-5.378 12.008-12.008C24.016 5.378 18.638 0 12.008 0zm-2.074 18.84l-1.34-1.34 2.898-2.898L8.6 11.7l1.34-1.34 2.898 2.898 2.898-2.898 1.34 1.34-2.898 2.898 2.898 2.898-1.34 1.34-2.898-2.898-2.898 2.898z" fill-rule="evenodd" clip-rule="evenodd" fill="none"/></svg>
+                    {{ _('Sincronização com Google Drive') }}
+                </h4>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input id="BACKUP_GDRIVE_ENABLED" type="checkbox" class="sr-only peer">
+                    <div class="w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-500"></div>
+                </label>
+            </div>
+
+            <div class="space-y-4 disablable-input">
+                <div>
+                    <label for="BACKUP_GDRIVE_AUTH_TYPE" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{{ _('Método de Autenticação') }}</label>
+                    <select id="BACKUP_GDRIVE_AUTH_TYPE" class="block w-full px-3 py-2.5 text-sm rounded-xl border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-gray-600 dark:text-white cursor-pointer">
+                        <option value="service_account">Conta de Serviço (JSON)</option>
+                        <option value="oauth">Login com Conta Google Pessoal (OAuth 2.0)</option>
+                    </select>
+                </div>
+
+                <div id="gdrive_service_account_section">
+                    <label for="BACKUP_GDRIVE_CREDENTIALS" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{{ _('Google Service Account JSON') }}</label>
+                    <textarea id="BACKUP_GDRIVE_CREDENTIALS" rows="3" class="block w-full px-3 py-2 text-sm rounded-xl border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-gray-600 dark:text-white" placeholder='{"type": "service_account", ...}'></textarea>
+                </div>
+
+                <div id="gdrive_oauth_section" class="hidden p-4 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+                    <label for="BACKUP_GDRIVE_OAUTH_CLIENT" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{{ _('Ficheiro JSON do Cliente OAuth (Web Application)') }}</label>
+                    <textarea id="BACKUP_GDRIVE_OAUTH_CLIENT" rows="3" class="block w-full px-3 py-2 text-sm rounded-xl border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-gray-600 dark:text-white mb-3" placeholder='{"web": {"client_id": ...}}'></textarea>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
+                            <strong>Token Salvo:</strong> <span id="oauth_token_status" class="text-red-500 font-bold">Não</span>
+                        </p>
+                        <button type="button" id="btn-gdrive-oauth" class="btn bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-colors text-sm flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12.008 0C5.378 0 0 5.378 0 12.008c0 6.63 5.378 12.008 12.008 12.008 6.63 0 12.008-5.378 12.008-12.008C24.016 5.378 18.638 0 12.008 0zm-2.074 18.84l-1.34-1.34 2.898-2.898L8.6 11.7l1.34-1.34 2.898 2.898 2.898-2.898 1.34 1.34-2.898 2.898 2.898 2.898-1.34 1.34-2.898-2.898-2.898 2.898z" fill-rule="evenodd" clip-rule="evenodd" fill="none"/></svg>
+                            Autorizar com a Google
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <label for="BACKUP_GDRIVE_FOLDER_ID" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">{{ _('Google Drive Folder ID') }}</label>
+                    <input type="text" id="BACKUP_GDRIVE_FOLDER_ID" class="block w-full px-3 py-2.5 text-sm rounded-xl border border-gray-300 bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 dark:bg-gray-900 dark:border-gray-600 dark:text-white" placeholder="ID da pasta">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

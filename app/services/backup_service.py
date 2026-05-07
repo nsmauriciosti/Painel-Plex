@@ -95,18 +95,36 @@ class BackupService:
             logger.info(f"{count} backups locais antigos removidos (retenção: {retention_days} dias).")
 
     def _upload_to_gdrive(self, filepath, filename, config):
-        credentials_json = config.get('BACKUP_GDRIVE_CREDENTIALS', '')
+        auth_type = config.get('BACKUP_GDRIVE_AUTH_TYPE', 'service_account')
         folder_id = str(config.get('BACKUP_GDRIVE_FOLDER_ID', '')).strip()
 
-        if not credentials_json or not folder_id:
-            logger.error("Credenciais ou ID da pasta do Google Drive não configurados.")
+        if not folder_id:
+            logger.error("ID da pasta do Google Drive não configurado.")
             return False
 
         try:
-            # Parse credenciais do JSON fornecido
-            creds_dict = json.loads(credentials_json)
             scopes = ['https://www.googleapis.com/auth/drive']
-            creds = service_account.Credentials.from_service_account_info(creds_dict, scopes=scopes)
+            creds = None
+            
+            if auth_type == 'service_account':
+                credentials_json = config.get('BACKUP_GDRIVE_CREDENTIALS', '')
+                if not credentials_json:
+                    logger.error("JSON da Service Account não configurado.")
+                    return False
+                creds_dict = json.loads(credentials_json)
+                creds = service_account.Credentials.from_service_account_info(creds_dict, scopes=scopes)
+            elif auth_type == 'oauth':
+                from google.oauth2.credentials import Credentials
+                oauth_token_str = config.get('BACKUP_GDRIVE_OAUTH_TOKEN', '')
+                if not oauth_token_str:
+                    logger.error("Token OAuth não configurado. Por favor, autorize a app nas definições.")
+                    return False
+                token_data = json.loads(oauth_token_str)
+                creds = Credentials.from_authorized_user_info(token_data, scopes=scopes)
+            else:
+                logger.error(f"Tipo de autenticação desconhecido: {auth_type}")
+                return False
+
             service = build('drive', 'v3', credentials=creds, cache_discovery=False)
 
             file_metadata = {

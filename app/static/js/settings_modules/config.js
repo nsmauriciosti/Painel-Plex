@@ -97,7 +97,10 @@ export const fieldMap = {
     'BACKUP_TIME': { type: 'text', default: '02:00' },
     'BACKUP_LOCAL_RETENTION_DAYS': { type: 'number', default: 7 },
     'BACKUP_GDRIVE_ENABLED': { type: 'checkbox', default: false },
+    'BACKUP_GDRIVE_AUTH_TYPE': { type: 'text', default: 'service_account' },
     'BACKUP_GDRIVE_CREDENTIALS': { type: 'textarea', default: '' },
+    'BACKUP_GDRIVE_OAUTH_CLIENT': { type: 'textarea', default: '' },
+    'BACKUP_GDRIVE_OAUTH_TOKEN': { type: 'password', default: '' },
     'BACKUP_GDRIVE_FOLDER_ID': { type: 'text', default: '' },
 };
 

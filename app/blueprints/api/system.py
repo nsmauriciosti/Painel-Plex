@@ -98,6 +98,103 @@ def get_active_streams():
         logger.error(f"Erro ao obter streams ativos: {e}", exc_info=True)
         return jsonify({"success": False, "message": "Falha ao obter streams ativos."}), 500
 
+@system_api_bp.route('/gdrive/auth_url', methods=['GET'])
+@login_required
+@admin_required
+def gdrive_auth_url():
+    import json
+    import os
+    from google_auth_oauthlib.flow import Flow
+    
+    # Permite HTTP em vez de apenas HTTPS para a autenticação OAuth 2.0
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    
+    try:
+        config = load_or_create_config()
+        client_json_str = config.get('BACKUP_GDRIVE_OAUTH_CLIENT', '')
+        if not client_json_str:
+            return jsonify({"success": False, "message": "Por favor, guarde primeiro o ficheiro JSON do Cliente OAuth."}), 400
+            
+        client_config = json.loads(client_json_str)
+        scopes = ['https://www.googleapis.com/auth/drive']
+        
+        # Criação do Flow
+        flow = Flow.from_client_config(client_config, scopes=scopes)
+        # O callback aponta para a nossa própria rota no painel
+        flow.redirect_uri = request.host_url.rstrip('/') + url_for('system_api.gdrive_callback')
+        
+        auth_url, state = flow.authorization_url(
+            access_type='offline',
+            include_granted_scopes='true',
+            prompt='consent'
+        )
+        
+        session['gdrive_oauth_state'] = state
+        # A biblioteca usa PKCE por padrão, precisamos guardar o code_verifier na sessão
+        if hasattr(flow, 'code_verifier'):
+            session['gdrive_oauth_code_verifier'] = flow.code_verifier
+            
+        return jsonify({"success": True, "auth_url": auth_url})
+    except Exception as e:
+        logger.error(f"Erro ao gerar auth url: {e}", exc_info=True)
+        return jsonify({"success": False, "message": str(e)}), 500
+
+@system_api_bp.route('/gdrive/callback', methods=['GET'])
+@login_required
+@admin_required
+def gdrive_callback():
+    import json
+    import os
+    from google_auth_oauthlib.flow import Flow
+    from flask import redirect
+    
+    # Permite HTTP em vez de apenas HTTPS para a autenticação OAuth 2.0
+    os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    
+    try:
+        state = session.get('gdrive_oauth_state')
+        if not state:
+            return "Erro: Sessão inválida ou expirada. Tente novamente.", 400
+            
+        config = load_or_create_config()
+        client_json_str = config.get('BACKUP_GDRIVE_OAUTH_CLIENT', '')
+        client_config = json.loads(client_json_str)
+        scopes = ['https://www.googleapis.com/auth/drive']
+        
+        flow = Flow.from_client_config(client_config, scopes=scopes, state=state)
+        flow.redirect_uri = request.host_url.rstrip('/') + url_for('system_api.gdrive_callback')
+        
+        # Recuperar o code_verifier da sessão e injetar no flow
+        code_verifier = session.get('gdrive_oauth_code_verifier')
+        if code_verifier and hasattr(flow, 'code_verifier'):
+            flow.code_verifier = code_verifier
+            
+        authorization_response = request.url
+        # Se estiver atrás de um proxy reverso e a URL original era https, force
+        if request.headers.get('X-Forwarded-Proto', 'http') == 'https':
+            authorization_response = authorization_response.replace('http://', 'https://')
+
+        flow.fetch_token(authorization_response=authorization_response)
+        
+        credentials = flow.credentials
+        creds_data = {
+            'token': credentials.token,
+            'refresh_token': credentials.refresh_token,
+            'token_uri': credentials.token_uri,
+            'client_id': credentials.client_id,
+            'client_secret': credentials.client_secret,
+            'scopes': credentials.scopes
+        }
+        
+        config['BACKUP_GDRIVE_OAUTH_TOKEN'] = json.dumps(creds_data)
+        save_app_config(config)
+        
+        return redirect(url_for('main.settings_page'))
+    except Exception as e:
+        logger.error(f"Erro no callback do OAuth: {e}", exc_info=True)
+        return f"Ocorreu um erro durante a autenticação: {str(e)}", 500
+
+
 @system_api_bp.route('/system-health')
 @login_required
 @admin_required
@@ -201,7 +298,8 @@ def api_settings():
             'SYSTEM_BROADCAST_ENABLED', 'SYSTEM_BROADCAST_MESSAGE',
             'TMDB_API_KEY', 'REFERRAL_BONUS_DAYS',
             'BACKUP_ENABLED', 'BACKUP_TIME', 'BACKUP_LOCAL_RETENTION_DAYS',
-            'BACKUP_GDRIVE_ENABLED', 'BACKUP_GDRIVE_CREDENTIALS', 'BACKUP_GDRIVE_FOLDER_ID'
+            'BACKUP_GDRIVE_ENABLED', 'BACKUP_GDRIVE_CREDENTIALS', 'BACKUP_GDRIVE_FOLDER_ID',
+            'BACKUP_GDRIVE_AUTH_TYPE', 'BACKUP_GDRIVE_OAUTH_CLIENT', 'BACKUP_GDRIVE_OAUTH_TOKEN'
         ]
         numeric_fields = [
             'DAYS_TO_REMOVE_BLOCKED_USER', 'DAYS_TO_NOTIFY_EXPIRATION',
@@ -297,7 +395,7 @@ def api_settings():
         'SECRET_KEY', 'PLEX_TOKEN', 'INTERNAL_TRIGGER_KEY',
         'TELEGRAM_BOT_TOKEN', 'TAUTULLI_API_KEY', 'EFI_CLIENT_SECRET',
         'MERCADOPAGO_ACCESS_TOKEN', 'BPIX_AUTH_TOKEN', 'OVERSEERR_API_KEY',
-        'WHATSAPP_API_KEY', 'TMDB_API_KEY'
+        'WHATSAPP_API_KEY', 'TMDB_API_KEY', 'BACKUP_GDRIVE_OAUTH_TOKEN'
     ]
 
     for key in sensitive_keys:
