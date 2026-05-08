@@ -130,6 +130,7 @@ def gdrive_auth_url():
                 app_base_url = app_base_url.replace('http://', 'https://')
                 
         flow.redirect_uri = app_base_url + url_for('system_api.gdrive_callback')
+        logger.info(f"Gerando URL OAuth com Redirect URI: {flow.redirect_uri}")
         
         auth_url, state = flow.authorization_url(
             access_type='offline',
